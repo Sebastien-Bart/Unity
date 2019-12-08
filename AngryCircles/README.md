@@ -11,7 +11,7 @@ et les autres viennent de l'Asset Store.
 
 ## Attention !
 
-Dans File -> Build Settings -> Scenes In Build , il faut l'ordre suivant avant de tester le jeu:
+Vérifiez que dans `File -> Build Settings -> Scenes In Build`, les scènes soient dans l'ordre suivant:
 - Scenes/MainMenu
 - Scenes/Level1
 - Scenes/Level2
