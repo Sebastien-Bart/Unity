@@ -23,7 +23,6 @@ public class PlayerController : MonoBehaviour {
     private bool jumpPressed = false;
     private float horizontalMovement;
     private int currentNbJumps;
-    private bool goalReached = false;
 
     private void Start()
     {
@@ -78,17 +77,21 @@ public class PlayerController : MonoBehaviour {
         {
             movable = false;
             rb.velocity = Vector2.zero;
-            rb.isKinematic = true;
+            rb.gravityScale = 0;
             StartCoroutine(MoveTo(transform, goal.transform.position, 0.7f));
         }
     }
 
-    public static IEnumerator MoveTo(Transform toMove, Vector2 destination, float speed)
+    public IEnumerator MoveTo(Transform toMove, Vector2 destination, float speed)
     {
         while((Vector2) toMove.position != destination)
         {
-            toMove.position = (Vector2) Vector2.MoveTowards(toMove.position, destination, speed * Time.deltaTime);
+            Vector3 newPosition = Vector3.MoveTowards(toMove.position, destination, speed * Time.deltaTime);
+            newPosition.z = 0;
+            toMove.position = newPosition;
             yield return null;
         }
+        Destroy(goal);
+        playerAnimation.Play("goal");
     }
 }
