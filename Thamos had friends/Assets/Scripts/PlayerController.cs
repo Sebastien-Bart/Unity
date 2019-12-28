@@ -3,75 +3,134 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public abstract class PlayerController : MonoBehaviour {
+
+    protected string characterName;
+
+    protected abstract string giveCharacterName();
     
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private float jumpForce = 10f;
-    [SerializeField] private int nbJumps = 1;
-    [SerializeField] private Transform groundCheckTopLeft;
-    [SerializeField] private Transform groundCheckBottomRight;
-    [SerializeField] private LayerMask layerMask;
-    [SerializeField] private GameObject goal;
+    [SerializeField] [Range(1, 20)] protected float speed = 10f;
+    [SerializeField] [Range(1, 20)] protected float jumpForce = 10f;
+    [SerializeField] [Range(0, 5)] protected int extraJumps = 0;
+    [SerializeField] [Range(0.1f, 0.3f)] protected float jumpTime = 1.0f;
+    [SerializeField] protected Transform groundCheckTopLeft;
+    [SerializeField] protected Transform groundCheckBottomRight;
+    [SerializeField] protected LayerMask layerMask;
+    [SerializeField] protected GameObject goal;
+    [SerializeField] protected GameObject focusIndicator;
 
 
-    private Rigidbody2D rb;
-    private Animation playerAnimation;
+    protected Rigidbody2D rb;
+    protected Animation playerAnimation;
 
-    private bool isGrounded = false;
-    private bool movable = true;
-    private bool jumping = false;
-    private bool jumpPressed = false;
-    private float horizontalMovement;
-    private int currentNbJumps;
+    
+    protected float horizontalMovement;
 
-    private void Start()
+    protected bool onGoal = false;
+    protected bool landingPlayed = false;
+    protected bool jumping = false;
+    protected bool isOnFocus = true; // A CHANGER
+    protected bool isGrounded = false;
+    protected bool movable = true;
+    protected int extraJumpsAvailable;
+    protected float jumpTimeCounter;
+
+    protected void Start()
     {
+        characterName = giveCharacterName();
         rb = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<Animation>();
-        currentNbJumps = nbJumps;
+        extraJumpsAvailable = extraJumps;
+        jumpTimeCounter = jumpTime;
     }
 
-    private void Update()
+    protected void Update()
     {
         isGrounded = Physics2D.OverlapArea(groundCheckTopLeft.position, groundCheckBottomRight.position, layerMask);
+
         horizontalMovement = Input.GetAxis("Horizontal");
-        jumpPressed = Input.GetButtonDown("Jump");
+
+        jumpManagement();
 
         if (isGrounded)
         {
-            currentNbJumps = nbJumps;
-            jumping = false;
+            playLanding();
+            extraJumpsAvailable = extraJumps;
+        }
+        else
+        {
+            landingPlayed = false;
+        }
+
+        if (!isOnFocus)
+        {
+            focusIndicator.SetActive(false);
         }
     }
 
-    void FixedUpdate()
+    protected void FixedUpdate()
     {
         if (movable)
         {
             rb.velocity = new Vector2(horizontalMovement * speed, rb.velocity.y);
-            if (jumpPressed)
+        }
+    }
+
+    protected void jumpManagement()
+    {
+        if (movable)
+        {
+            if (Input.GetButton("Jump"))
             {
-                if (isGrounded && currentNbJumps > 0)
+                if (isGrounded)
                 {
                     jumping = true;
-                    Jump();
+                    if (Input.GetButtonDown("Jump"))
+                        playerAnimation.Play(characterName + "Jump");
                 }
-                else if (jumping && currentNbJumps > 0) {
-                    Jump();
+                else if (extraJumpsAvailable > 0)
+                {
+                    if (Input.GetButtonDown("Jump"))
+                    {
+                        jumping = true;
+                        playerAnimation.Stop(characterName + "Jump"); // si double saut rapide
+                        playerAnimation.Play(characterName + "Jump");
+                        extraJumpsAvailable--;
+                    }
                 }
+
+                if(jumping && jumpTimeCounter > 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, 1 * jumpForce);
+                    jumpTimeCounter -= Time.deltaTime;
+                }
+            }
+            else if (Input.GetButtonUp("Jump"))
+            {
+                jumpTimeCounter = jumpTime;
+                jumping = false;
             }
         }
     }
 
-    private void Jump()
+    protected void playLanding()
     {
-        rb.AddForce(new Vector2(0, 1 * jumpForce), ForceMode2D.Impulse);
-        jumping = true;
-        playerAnimation.Play("jump");
-        currentNbJumps--;
+        if (!landingPlayed && !onGoal)
+        {
+            playerAnimation.Play(characterName + "Landing");
+            landingPlayed = true;
+        }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject == goal)
+        {
+            onGoal = true;
+        }
+    }
+
+    protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject == goal)
         {
@@ -82,7 +141,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    public IEnumerator MoveTo(Transform toMove, Vector2 destination, float speed)
+    protected IEnumerator MoveTo(Transform toMove, Vector2 destination, float speed)
     {
         while((Vector2) toMove.position != destination)
         {
@@ -92,6 +151,6 @@ public class PlayerController : MonoBehaviour {
             yield return null;
         }
         Destroy(goal);
-        playerAnimation.Play("goal");
+        playerAnimation.Play(characterName + "Goal");
     }
 }
