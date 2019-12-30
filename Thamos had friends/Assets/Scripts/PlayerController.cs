@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Classe abstraite pour gerer un character
+/// </summary>
 public abstract class PlayerController : MonoBehaviour {
 
-    protected string characterName;
+    protected string characterName; // pour jouer les animations propres a chaque character
 
     protected abstract string giveCharacterName();
-    
+
     [SerializeField] [Range(1, 20)] protected float speed = 10f;
     [SerializeField] [Range(1, 20)] protected float jumpForce = 10f;
     [SerializeField] [Range(0, 5)] protected int extraJumps = 0;
     [SerializeField] [Range(0.1f, 0.3f)] protected float jumpTime = 0.2f;
     [SerializeField] [Range(0.1f, 1f)] protected float moveToGoalSpeed = 0.7f;
-    [SerializeField] protected Transform groundCheckTopLeft;
-    [SerializeField] protected Transform groundCheckBottomRight;
-    [SerializeField] protected LayerMask layerMask;
     [SerializeField] protected GameObject goal;
     [SerializeField] protected GameObject focusIndicator;
 
@@ -29,14 +29,17 @@ public abstract class PlayerController : MonoBehaviour {
     protected float horizontalMovement;
 
     protected bool onGoal = false;
-    protected bool landingPlayed = false;
-    protected bool isOnFocus = false;
-    protected bool isGrounded = false;
-    protected bool movable = true;
+    public bool isGrounded = false;
+    [SerializeField] protected bool movable = false;
 
+    protected bool isFocus;
     protected bool jumping = false;
     protected int extraJumpsAvailable;
     protected float jumpTimeCounter;
+
+    // --------------------------------- FONCTIONS API UNITY -------------------------------------
+
+    // ----- START / UPDATE(s) -----
 
     protected void Start()
     {
@@ -47,58 +50,23 @@ public abstract class PlayerController : MonoBehaviour {
         characterName = giveCharacterName();
         extraJumpsAvailable = extraJumps;
         jumpTimeCounter = jumpTime;
-
-        //set first in the list onFocus
-        transform.parent.GetChild(0).GetComponent<PlayerController>().setOnFocus();
     }
 
     protected void Update()
     {
-        isGrounded = Physics2D.OverlapArea(groundCheckTopLeft.position, groundCheckBottomRight.position, layerMask);
-
         if (movable)
         {
             horizontalMovement = Input.GetAxis("Horizontal");
             jumpManagement();
-            changeCharacterManagement();
         } else
         {
             horizontalMovement = 0;
-        }
-
-        if (isGrounded)
-        {
-            playLanding();
-            extraJumpsAvailable = extraJumps;
-        } else
-        {
-            landingPlayed = false;
-        }
-
-        if (!isOnFocus)
-        {
-            focusIndicator.SetActive(false);
-            movable = false;
-        } else
-        {
-            focusIndicator.SetActive(true);
-            movable = true;
         }
     }
 
     protected void FixedUpdate()
     {
        rb.velocity = new Vector2(horizontalMovement * speed, rb.velocity.y);
-    }
-
-    protected void changeCharacterManagement()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            isOnFocus = false;
-            int actualFocus = transform.GetSiblingIndex();
-            transform.parent.GetChild((actualFocus + 1) % transform.parent.childCount).GetComponent<PlayerController>().setOnFocus();
-        }
     }
 
     protected void jumpManagement()
@@ -135,14 +103,7 @@ public abstract class PlayerController : MonoBehaviour {
         }
     }
 
-    protected void playLanding() // voir les onLandEvent...
-    {
-        if (!landingPlayed && !onGoal)
-        {
-            playerAnimation.Play(characterName + "Landing");
-            landingPlayed = true;
-        }
-    }
+    // ----- TRIGGER -----
 
     protected void OnTriggerStay2D(Collider2D collision)
     {
@@ -166,7 +127,40 @@ public abstract class PlayerController : MonoBehaviour {
         if (collision.gameObject == goal && !checkIfAllOnGoal())
         {
             spriteRenderer.color = initialColor;
+            onGoal = false;
         }
+    }
+
+    // ---------------------------------------- MES FONCTIONS ----------------------------------
+
+    public void playLanding()
+    {
+        if (!onGoal)
+        {
+            playerAnimation.Play(characterName + "Landing");
+        }
+    }
+
+    public void setFocus(bool focus)
+    {
+        isFocus = focus;
+        focusIndicator.SetActive(focus);
+        movable = focus;
+    }
+
+    public bool getIsFocus()
+    {
+        return isFocus;
+    }
+
+    public void resetExtraJumpsAvailable()
+    {
+        extraJumpsAvailable = extraJumps;
+    }
+
+    public void addEXtraJump()
+    {
+        extraJumps++;
     }
 
     protected bool checkIfAllOnGoal()
@@ -187,11 +181,6 @@ public abstract class PlayerController : MonoBehaviour {
         return onGoal;
     }
 
-    protected void setOnFocus()
-    {
-        isOnFocus = true;
-    }
-
     protected IEnumerator moveToGoal(Transform toMove, Vector2 destination, float speed)
     {
         while((Vector2) toMove.position != destination)
@@ -204,4 +193,5 @@ public abstract class PlayerController : MonoBehaviour {
         Destroy(goal);
         playerAnimation.Play(characterName + "Goal");
     }
+
 }
