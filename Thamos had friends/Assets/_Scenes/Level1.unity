@@ -218,15 +218,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e9dc2fecf817b74591f787c2a72c3e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumping: 0
+  movable: 0
+  isFocus: 0
+  extraJumps: 0
   speed: 5
   jumpForce: 10
-  extraJumps: 0
   jumpTime: 0.2
   moveToGoalSpeed: 0.7
   goal: {fileID: 171178961}
   focusIndicator: {fileID: 1687208723}
   isGrounded: 0
-  movable: 0
 --- !u!61 &28484739
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -265,7 +267,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.6054
+  m_Mass: 0.72
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 4
@@ -661,13 +663,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 299262426}
-  m_LocalRotation: {x: -0, y: -0, z: 0.0037070618, w: 0.9999932}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -11.586, y: -0.807, z: 0}
   m_LocalScale: {x: 77.95627, y: 234.91681, z: 1.2462}
   m_Children: []
   m_Father: {fileID: 500032212}
   m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.425}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &299262428
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -831,15 +833,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e9dc2fecf817b74591f787c2a72c3e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumping: 0
+  movable: 0
+  isFocus: 0
+  extraJumps: 0
   speed: 5
   jumpForce: 10
-  extraJumps: 0
   jumpTime: 0.2
   moveToGoalSpeed: 0.7
   goal: {fileID: 478272483}
   focusIndicator: {fileID: 750752778}
   isGrounded: 0
-  movable: 0
 --- !u!61 &357906509
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -963,8 +967,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 436934898}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.0495, z: 0}
-  m_LocalScale: {x: 0.9, y: 0.01, z: 1}
+  m_LocalPosition: {x: 0, y: -0.04, z: 0}
+  m_LocalScale: {x: 1, y: 0.2, z: 1}
   m_Children: []
   m_Father: {fileID: 28484737}
   m_RootOrder: 1
@@ -1372,7 +1376,6 @@ MonoBehaviour:
   characters: {fileID: 760642491}
   bottomLeftCameraLimit: {fileID: 968421984}
   topRightCameraLimit: {fileID: 677936372}
-  currentCameraSpeed: 0
 --- !u!1 &538066475
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,13 +2501,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565504986}
-  m_LocalRotation: {x: -0, y: -0, z: 0.0037070618, w: 0.9999932}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 27.255, y: 5.669, z: 0}
   m_LocalScale: {x: 149.99722, y: 296.43216, z: 1.2462}
   m_Children: []
   m_Father: {fileID: 500032212}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.425}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1565504988
 BoxCollider2D:
   m_ObjectHideFlags: 0

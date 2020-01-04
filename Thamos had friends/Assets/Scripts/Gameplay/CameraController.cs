@@ -4,22 +4,19 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] [Range(5, 15)] float cameraSpeed = 10;
+    [SerializeField] [Range(5, 15)] private float cameraSpeed = 10;
 
-    [SerializeField] Transform firstPosition;
-    [SerializeField] Transform characters;
+    [SerializeField] private Transform firstPosition;
+    [SerializeField] private Transform characters;
 
-    [SerializeField] Transform bottomLeftCameraLimit;
-    [SerializeField] Transform topRightCameraLimit;
+    [SerializeField] private Transform bottomLeftCameraLimit;
+    [SerializeField] private Transform topRightCameraLimit;
 
     private Transform characterFocused;
-
-    [SerializeField] private float currentCameraSpeed;
 
     private void Start()
     {
         characterFocused = characters.GetChild(0);
-        currentCameraSpeed = cameraSpeed;
 
         Vector3 firstPos = firstPosition.position;
         firstPos.z = transform.position.z;
@@ -30,7 +27,7 @@ public class CameraController : MonoBehaviour
     {
         foreach (Transform character in characters)
         {
-            if (character.GetComponent<PlayerController>().getIsFocus())
+            if (character.GetComponent<PlayerController>().isFocus)
             {
                 characterFocused = character;
             }
@@ -60,7 +57,7 @@ public class CameraController : MonoBehaviour
         if (distance < 1)
             distance = 1;
 
-        Vector3 toGo = Vector3.MoveTowards(transform.position, characterFocused.position, currentCameraSpeed * Time.fixedDeltaTime * distance);
+        Vector3 toGo = Vector3.MoveTowards(transform.position, characterFocused.position, cameraSpeed * Time.fixedDeltaTime * distance);
         toGo.z = transform.position.z;
         transform.position = toGo;
     }

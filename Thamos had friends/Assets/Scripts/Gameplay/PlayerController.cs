@@ -12,14 +12,17 @@ public abstract class PlayerController : MonoBehaviour {
 
     protected abstract string giveCharacterName();
 
+    public bool jumping = false;
+    public bool movable = false;
+    public bool isFocus;
+    [Range(0, 5)] public int extraJumps = 0;
+
     [SerializeField] [Range(1, 20)] protected float speed = 10f;
     [SerializeField] [Range(1, 20)] protected float jumpForce = 10f;
-    [SerializeField] [Range(0, 5)] protected int extraJumps = 0;
     [SerializeField] [Range(0.1f, 0.3f)] protected float jumpTime = 0.2f;
     [SerializeField] [Range(0.1f, 1f)] protected float moveToGoalSpeed = 0.7f;
     [SerializeField] protected GameObject goal;
     [SerializeField] protected GameObject focusIndicator;
-
 
     protected Rigidbody2D rb;
     protected Animation playerAnimation;
@@ -30,10 +33,7 @@ public abstract class PlayerController : MonoBehaviour {
 
     protected bool onGoal = false;
     public bool isGrounded = false;
-    [SerializeField] protected bool movable = false;
 
-    protected bool isFocus;
-    protected bool jumping = false;
     protected int extraJumpsAvailable;
     protected float jumpTimeCounter;
 
@@ -146,11 +146,6 @@ public abstract class PlayerController : MonoBehaviour {
         isFocus = focus;
         focusIndicator.SetActive(focus);
         movable = focus;
-    }
-
-    public bool getIsFocus()
-    {
-        return isFocus;
     }
 
     public void resetExtraJumpsAvailable()
