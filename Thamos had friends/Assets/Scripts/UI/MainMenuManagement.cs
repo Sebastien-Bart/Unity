@@ -90,4 +90,10 @@ public class MainMenuManagement : MonoBehaviour
         Debug.Log("Settings pressed");
     }
 
+    public void exitGame()
+    {
+        Debug.Log("Exit Game pressed");
+        Application.Quit();
+    }
+
 }

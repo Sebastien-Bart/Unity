@@ -14,11 +14,25 @@ public class TopPlayerCollision : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        player.GetComponent<PlayerController>().jumping = false;
+        if (collision.collider.bounds.min.y > collision.otherCollider.bounds.max.y)
+        {
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            if (!(rb.velocity.y < 0))
+            {
+                player.GetComponent<PlayerController>().setJumpTimeCounterToZero();
+            }
+        }
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        player.GetComponent<PlayerController>().jumping = false;
+        if (collision.collider.bounds.min.y > collision.otherCollider.bounds.max.y)
+        {
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            if (!(rb.velocity.y < 0))
+            {
+                player.GetComponent<PlayerController>().setJumpTimeCounterToZero();
+            }
+        }
     }
 }

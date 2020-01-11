@@ -31,11 +31,12 @@ public abstract class PlayerController : MonoBehaviour {
     
     protected float horizontalMovement;
 
+    protected bool canBeginJump = true;
     protected bool onGoal = false;
     public bool isGrounded = false;
 
     protected int extraJumpsAvailable;
-    protected float jumpTimeCounter;
+    [SerializeField] protected float jumpTimeCounter;
 
     // --------------------------------- FONCTIONS API UNITY -------------------------------------
 
@@ -73,31 +74,36 @@ public abstract class PlayerController : MonoBehaviour {
     {
         if (Input.GetButton("Jump"))
         {
-            if (isGrounded)
+            if (canBeginJump)
             {
-                jumping = true;
-                if (Input.GetButtonDown("Jump"))
-                    playerAnimation.Play(characterName + "Jump");
-            }
-            else if (extraJumpsAvailable > 0)
-            {
-                if (Input.GetButtonDown("Jump"))
+                if (isGrounded)
                 {
+                    playerAnimation.Play(characterName + "Jump");
+                    canBeginJump = false;
+                    jumping = true;
+                }
+                else if (extraJumpsAvailable > 0)
+                {
+                    canBeginJump = false;
                     jumping = true;
                     playerAnimation.Stop(characterName + "Jump"); // si double saut rapide
                     playerAnimation.Play(characterName + "Jump");
                     extraJumpsAvailable--;
                 }
             }
-
             if(jumping && jumpTimeCounter > 0)
             {
                 rb.velocity = new Vector2(rb.velocity.x, 1 * jumpForce);
                 jumpTimeCounter -= Time.deltaTime;
             }
+            else
+            {
+                jumping = false;
+            }
         }
         else if (Input.GetButtonUp("Jump"))
         {
+            canBeginJump = true;
             jumpTimeCounter = jumpTime;
             jumping = false;
         }
@@ -133,9 +139,19 @@ public abstract class PlayerController : MonoBehaviour {
 
     // ---------------------------------------- MES FONCTIONS ----------------------------------
 
+    public void setJumpTimeCounterToZero()
+    {
+        jumpTimeCounter = 0;
+    }
+
+    public void resetJumpTimeCounter()
+    {
+        jumpTimeCounter = jumpTime;
+    }
+
     public void playLanding()
     {
-        if (!onGoal)
+        if (movable)
         {
             playerAnimation.Play(characterName + "Landing");
         }

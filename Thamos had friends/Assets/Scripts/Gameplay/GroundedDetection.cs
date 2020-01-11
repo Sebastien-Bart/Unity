@@ -20,20 +20,30 @@ public class GroundedDetection : MonoBehaviour
         {
             if (collision.gameObject != player)
             {
-                player.GetComponent<PlayerController>().isGrounded = true;
-                player.GetComponent<PlayerController>().playLanding();
-                player.GetComponent<PlayerController>().resetExtraJumpsAvailable();
+                Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+                if(!(rb.velocity.y > 0))
+                {
+                    player.GetComponent<PlayerController>().isGrounded = true;
+                    player.GetComponent<PlayerController>().playLanding();
+                    player.GetComponent<PlayerController>().resetExtraJumpsAvailable();
+                    player.GetComponent<PlayerController>().resetJumpTimeCounter();
+                }
             }
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision) // a enlever si il faut opti
+    private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.collider.bounds.max.y < transform.position.y)
         {
             if (collision.gameObject != player)
             {
-                player.GetComponent<PlayerController>().isGrounded = true;
+                Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+                if (!(rb.velocity.y >0))
+                {
+                    player.GetComponent<PlayerController>().isGrounded = true;
+                    player.GetComponent<PlayerController>().resetJumpTimeCounter();
+                }
             }
         }
     }
