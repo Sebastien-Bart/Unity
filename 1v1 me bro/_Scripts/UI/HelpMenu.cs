@@ -12,10 +12,4 @@ public class HelpMenu : AbstractMenu
         base.ActivateMenu();
     }
 
-    public void CloseHelpMenuAndStartGame()
-    {
-        base.DeactivateMenu();
-        Time.timeScale = 1;
-    }
-
 }

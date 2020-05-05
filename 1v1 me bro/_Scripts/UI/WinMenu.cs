@@ -8,15 +8,8 @@ public class WinMenu : AbstractMenu
 {
     public GameObject leftWinAnim;
     public GameObject rightWinAnim;
-    public GameObject pauseButton;
     public Sprite rightPlayerScreen;
     public Sprite leftPlayerScreen;
-
-    public override void ActivateMenu()
-    {
-        base.ActivateMenu();
-        pauseButton.SetActive(false);
-    }
 
     public void SetWinner(string winner)
     {

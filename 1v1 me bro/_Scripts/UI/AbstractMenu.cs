@@ -10,6 +10,8 @@ public abstract class AbstractMenu : MonoBehaviour
     public Image fader;
     public float moveSpeed = 15f;
 
+    public GameObject pauseButton;
+
     protected Vector2 activPos;
     protected Vector2 notActivePos;
     protected RectTransform rect;
@@ -26,6 +28,7 @@ public abstract class AbstractMenu : MonoBehaviour
     {
         if (!moving)
         {
+            pauseButton.SetActive(false);
             Pause();
             StartCoroutine(MoveToActivePosWithFadeIn());
         }
@@ -35,6 +38,7 @@ public abstract class AbstractMenu : MonoBehaviour
     {
         if (!moving)
         {
+            pauseButton.SetActive(true);
             Unpause();
             StartCoroutine(MoveToNotActivePosWithFadeOut());
         }

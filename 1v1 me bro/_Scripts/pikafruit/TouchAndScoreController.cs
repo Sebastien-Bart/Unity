@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class TouchAndScoreController : MonoBehaviour
 {
-
+    public SpriteRenderer colorAnswer;
+    public float colorAnswerSpeed;
     public float scoreFadeSpeed;
     public static float timeOfRandomScore = 3f;
 
@@ -13,9 +14,12 @@ public class TouchAndScoreController : MonoBehaviour
     public GameObject targetFruit;
     public FruitHolderController fruitHolder;
     public TextMeshProUGUI scoreText;
+    public WinMenu winMenu;
 
     public static bool canTouch = false;
 
+    private bool colorChanging = false;
+    private Coroutine colorCouroutine;
     private int points = 0;
 
 
@@ -27,13 +31,25 @@ public class TouchAndScoreController : MonoBehaviour
             {
                 points++;
                 targetFruit.GetComponent<TargetFruitController>().ReactToGoodAnswer();
-                // particules bon point
+                if (!colorChanging)
+                    colorCouroutine = StartCoroutine(changeColorAnswer(new Color32(134, 255, 151, 255)));
+                else
+                {
+                    StopCoroutine(colorCouroutine);
+                    colorCouroutine = StartCoroutine(changeColorAnswer(new Color32(134, 255, 151, 255)));
+                }
             }
             else
             {
                 points--;
                 cameraShake.AskShake();
-                // particules mauvais point
+                if (!colorChanging)
+                    colorCouroutine = StartCoroutine(changeColorAnswer(new Color32(255, 121, 121, 255)));
+                else
+                {
+                    StopCoroutine(colorCouroutine);
+                    colorCouroutine = StartCoroutine(changeColorAnswer(new Color32(255, 121, 121, 255)));
+                }
             }
         }
     }
@@ -61,6 +77,25 @@ public class TouchAndScoreController : MonoBehaviour
             yield return null;
         }
         scoreText.text = points.ToString();
+        yield return new WaitForSeconds(2f);
+        winMenu.ActivateMenu();
+
+    }
+
+    private IEnumerator changeColorAnswer(Color targetColor)
+    {
+        colorChanging = true;
+        while (colorAnswer.color != targetColor)
+        {
+            colorAnswer.color = Vector4.MoveTowards(colorAnswer.color, targetColor, colorAnswerSpeed * Time.deltaTime);
+            yield return null;
+        }
+        while (colorAnswer.color != new Color(1, 1, 1, 0))
+        {
+            colorAnswer.color = Vector4.MoveTowards(colorAnswer.color, new Color(1, 1, 1, 0), colorAnswerSpeed * Time.deltaTime);
+            yield return null;
+        }
+        colorChanging = false;
     }
 
 }
