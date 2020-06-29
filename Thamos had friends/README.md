@@ -2,4 +2,5 @@
 
 Jeu inspiré de "Thomas was alone"
 
-En construction.
+Prototype, mouvements et physique du personnage et de la caméra.
+Essai d'un menu.
