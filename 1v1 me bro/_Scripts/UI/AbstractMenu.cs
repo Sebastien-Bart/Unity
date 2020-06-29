@@ -39,7 +39,6 @@ public abstract class AbstractMenu : MonoBehaviour
         if (!moving)
         {
             pauseButton.SetActive(true);
-            Unpause();
             StartCoroutine(MoveToNotActivePosWithFadeOut());
         }
     }
@@ -90,6 +89,9 @@ public abstract class AbstractMenu : MonoBehaviour
             yield return null;
         }
         moving = false;
+        // test
+        yield return new WaitForSecondsRealtime(0.5f);
+        Unpause();
     }
 
 }

@@ -11,6 +11,7 @@ public class FruitBehavior : MonoBehaviour
 
     private void Start()
     {
+        ending = false;
         initScale = transform.localScale;
     }
 

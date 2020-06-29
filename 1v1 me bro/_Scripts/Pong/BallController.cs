@@ -2,36 +2,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using TreeEditor;
 using UnityEngine;
 
 public class BallController : MonoBehaviour
 {
+    public WinMenu winMenu;
+
     [Header("Players")]
     public PlayerController leftPlayer;
     public PlayerController rightPlayer;
 
     [Header("Ball Settings")]
+    public ParticleSystem goalParticle;
     public ParticleSystem hitParticle;
     public float startSpeed;
+    public float maxSpeedSqr;
     [Range(1f, 1.2f)] public float acceleration;
+    [Range(1f, 10f)] public float shrinkSpeed;
 
+    private Vector3 initSize;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Vector2 prevVel;
+
 
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        KickOff();
+        StartCoroutine(KickOff());
+        initSize = transform.localScale;
+        prevVel = Vector2.zero;
     }
 
-    public void KickOff()
+    public IEnumerator KickOff()
     {
         prevVel = Vector2.zero;
         int x = 1;
         if ((int)UnityEngine.Random.Range(0,2) == 0)
             x = -1;
+        yield return new WaitForSeconds(0.5f);
         rb.velocity = new Vector2(x*startSpeed, 0);
     }
 
@@ -78,10 +89,17 @@ public class BallController : MonoBehaviour
     private void CalculateNewTrajectory(Collision2D collision)
     {
         float nextMagnitudeSqr = 0;
+
         if (prevVel.sqrMagnitude > rb.velocity.sqrMagnitude) // si mauvaise collision (coin de raquette)
-            nextMagnitudeSqr = (prevVel * acceleration * acceleration).sqrMagnitude;
+            nextMagnitudeSqr = (prevVel * acceleration).sqrMagnitude;
         else
             nextMagnitudeSqr = (rb.velocity * acceleration).sqrMagnitude;
+
+        if (nextMagnitudeSqr > maxSpeedSqr)
+        {
+            nextMagnitudeSqr = maxSpeedSqr;
+        }
+            
 
         float tranche = collision.collider.transform.localScale.y / 8;
         float segment = Mathf.RoundToInt((transform.position.y - collision.collider.transform.position.y) / tranche);
@@ -110,20 +128,22 @@ public class BallController : MonoBehaviour
 
     private IEnumerator Goal()
     {
-        while (sr.color != Color.red)
+        yield return new WaitForSeconds(0.5f);
+        while (transform.localScale != Vector3.zero)
         {
-            sr.color = Vector4.MoveTowards(sr.color, Color.red, 1f * Time.deltaTime);
+            transform.localScale = Vector2.MoveTowards(transform.localScale, Vector3.zero, shrinkSpeed * Time.deltaTime);
             yield return null;
         }
-        // Jouer particules but (Explosion) ? + cacher la balle
+        yield return new WaitForSeconds(0.25f);
+        ParticleSystem goalP = Instantiate(goalParticle);
+        goalP.transform.position = transform.position;
+        goalP.Play();
         yield return new WaitForSeconds(1f);
 
         if (transform.position.x > 0)
             leftPlayer.Goal();
         else if (transform.position.x < 0)
             rightPlayer.Goal();
-        leftPlayer.StartCoroutine("DisplayScore");
-        rightPlayer.StartCoroutine("DisplayScore");
 
         yield return new WaitForSeconds(3f); // Delai a voir selon coroutine displayscore
         // Verifier si partie n'est pas finie
@@ -133,14 +153,19 @@ public class BallController : MonoBehaviour
             yield break;
         }
         transform.position = Vector2.zero;
-        sr.color = Color.white;
-        yield return new WaitForSeconds(3f);
-        KickOff();
+        while (transform.localScale != initSize)
+        {
+            transform.localScale = Vector3.MoveTowards(transform.localScale, initSize, shrinkSpeed * Time.deltaTime);
+            yield return null;
+        }
+        //yield return new WaitForSeconds(0.5f);
+        StartCoroutine(KickOff());
     }
 
     private IEnumerator EndGame()
     {
-        throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1f);
+        winMenu.ActivateMenu();
     }
 
 }

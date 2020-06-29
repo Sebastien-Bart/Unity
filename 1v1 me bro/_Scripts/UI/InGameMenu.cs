@@ -20,12 +20,18 @@ public class InGameMenu : AbstractMenu
         if (AudioListener.volume == 0)
         {
             AudioListener.volume = 1;
-            soundButtonImg.sprite = soundOn;
+            if (soundOn)
+            {
+                soundButtonImg.sprite = soundOn;
+            }
         }
         else if (AudioListener.volume == 1)
         {
             AudioListener.volume = 0;
-            soundButtonImg.sprite = soundOff;
+            if (soundOff)
+            {
+                soundButtonImg.sprite = soundOff;
+            }
         }
     }
 

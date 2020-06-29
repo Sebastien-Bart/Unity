@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+
+    public ScoreDisplayManager scoreDM;
     public int points = 0;
+
+    [Header("Settings")]
     public float speed = 5f;
 
     private Rigidbody2D rb;
@@ -42,11 +46,7 @@ public class PlayerController : MonoBehaviour
     public void Goal()
     {
         points++;
-    }
-
-    public IEnumerator DisplayScore()
-    {
-        throw new System.NotImplementedException();
+        scoreDM.StartCoroutine("DisplayAndUpdateScore");
     }
 
 }
