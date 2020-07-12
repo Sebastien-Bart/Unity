@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using TreeEditor;
+﻿using System.Collections;
 using UnityEngine;
 
 public class BallController : MonoBehaviour
