@@ -1,14 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class StarshipController : MonoBehaviour
 {
+    [Header("other Starship")]
+    public GameObject otherStarship;
+
     [Header("Starship settings")]
     public float rotateSpeed = 150f;
     public float shipSpeed = 10f;
     public float minMagSqrAbleGoForward = 15;
     public float minMagSqrAbleRotate = 10;
+
+    [NonSerialized]
+    public SpriteRenderer outlineSR;
+
+    private float baseShipSpeed;
 
     private bool rotating;
     private bool canGoForward;
@@ -20,10 +29,13 @@ public class StarshipController : MonoBehaviour
     private float maxYcam;
     private Camera cam;
 
+    
     private Rigidbody2D rb;
 
     void Start()
     {
+        baseShipSpeed = shipSpeed;
+
         // Off camera related 
         cam = Camera.main;
         minXcam = cam.ScreenToWorldPoint(Vector3.zero).x;
@@ -34,6 +46,7 @@ public class StarshipController : MonoBehaviour
         canGoForward = true;
         rotating = true;
         rb = GetComponent<Rigidbody2D>();
+        outlineSR = transform.GetChild(0).GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -58,6 +71,11 @@ public class StarshipController : MonoBehaviour
             rotating = false;
             canGoForward = false;
             rb.AddRelativeForce(new Vector2(shipSpeed, 0f), ForceMode2D.Impulse);
+            
+            if (shipSpeed != baseShipSpeed) // pour power up boost
+                outlineSR.color = Color.black;
+
+            shipSpeed = baseShipSpeed; 
         }
     }
 
