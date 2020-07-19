@@ -6,6 +6,9 @@ using UnityEngine;
 public class StarshipController : MonoBehaviour
 {
     [Header("other Starship")]
+    public DeathManager deathManager;
+
+    [Header("other Starship")]
     public GameObject otherStarship;
 
     [Header("Starship settings")]
@@ -13,14 +16,21 @@ public class StarshipController : MonoBehaviour
     public float shipSpeed = 10f;
     public float minMagSqrAbleGoForward = 15;
     public float minMagSqrAbleRotate = 10;
+    
 
-    [NonSerialized]
-    public SpriteRenderer outlineSR;
+    [NonSerialized] public SpriteRenderer outlineSR;
+    [NonSerialized] public bool deathTouchOn = false;
 
     private float baseShipSpeed;
 
     private bool rotating;
     private bool canGoForward;
+
+    private Vector2 spawnPos; 
+    public Vector2 SpawnPos { get => spawnPos; }
+
+    private Quaternion spawnRot;
+    public Quaternion SpawnRot { get => spawnRot;}
 
     // Off camera related attributes
     private float minXcam;
@@ -32,8 +42,11 @@ public class StarshipController : MonoBehaviour
     
     private Rigidbody2D rb;
 
+
     void Start()
     {
+        spawnPos = transform.position;
+        spawnRot = transform.rotation;
         baseShipSpeed = shipSpeed;
 
         // Off camera related 
@@ -56,6 +69,18 @@ public class StarshipController : MonoBehaviour
         TPWhenOffCamera();
     }
 
+    // Pour deathTouch
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // if(gameobject.tag == vaisseau) pas obligé, il n'y a queuux deux qui ont des colliders non triggers
+        if (deathTouchOn)
+        {
+            outlineSR.color = Color.black;
+            deathTouchOn = false;
+            deathManager.Kill(collision.gameObject);
+        }
+    }
+
     public void CheckIfCanGoForward()
     {
         if (rb.velocity.sqrMagnitude < minMagSqrAbleGoForward)
@@ -71,10 +96,14 @@ public class StarshipController : MonoBehaviour
             rotating = false;
             canGoForward = false;
             rb.AddRelativeForce(new Vector2(shipSpeed, 0f), ForceMode2D.Impulse);
-            
-            if (shipSpeed != baseShipSpeed) // pour power up boost
-                outlineSR.color = Color.black;
 
+            if (shipSpeed != baseShipSpeed) // pour power up boost
+            {
+                if (!deathTouchOn)
+                    outlineSR.color = Color.black;
+                else
+                    outlineSR.color = Color.red;
+            }
             shipSpeed = baseShipSpeed; 
         }
     }
@@ -102,5 +131,9 @@ public class StarshipController : MonoBehaviour
         else if (transform.position.y > maxYcam)
             transform.position = new Vector3(transform.position.x, minYcam, transform.position.z);
     }
+
+    
+
+    
 
 }

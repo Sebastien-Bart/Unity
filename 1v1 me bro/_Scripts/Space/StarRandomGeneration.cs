@@ -24,9 +24,9 @@ public class StarRandomGeneration : MonoBehaviour
             Vector3 pos = cam.ScreenToWorldPoint(new Vector3(x, y, 19));
 
             if (Random.Range(0f, 1f) < 0.5f) // etoile1
-                Instantiate(etoile1, pos, Quaternion.identity);
+                Instantiate(etoile1, pos, Quaternion.identity, transform);
             else // etoile2
-                Instantiate(etoile2, pos, Quaternion.identity);
+                Instantiate(etoile2, pos, Quaternion.identity, transform);
         }
     }
 

@@ -8,13 +8,12 @@ public abstract class PowerUp : MonoBehaviour
 
     protected void OnTriggerEnter2D(Collider2D collision)
     {
-        pickerStarship = collision.gameObject.GetComponent<StarshipController>();
-        ActivatePowerUp();
-        Destroy(gameObject);
         ParticleSystem particle = Instantiate(pickedParticle);
         particle.transform.position = transform.position;
         particle.Play();
-        
+        pickerStarship = collision.gameObject.GetComponent<StarshipController>();
+        ActivatePowerUp();
+        Destroy(gameObject);
     }
 
     public abstract void ActivatePowerUp();
