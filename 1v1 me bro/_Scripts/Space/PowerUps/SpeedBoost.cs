@@ -7,7 +7,7 @@ public class SpeedBoost : PowerUp
     [SerializeField]
     private float newSpeed = 30f;
 
-    public override void ActivatePowerUp()
+    public override void ActivatePowerUp(StarshipController pickerStarship)
     {
         pickerStarship.outlineSR.color = Color.green;
         pickerStarship.shipSpeed = newSpeed;

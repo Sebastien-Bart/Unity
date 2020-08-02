@@ -68,4 +68,12 @@ public class DrawSpeedTrail : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        drawing = false;
+        StopAllCoroutines();
+        points.Clear();
+        lr.positionCount = 0;
+    }
+
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StarshipController : MonoBehaviour
 {
-    [Header("other Starship")]
+    [Header("Death Manager")]
     public DeathManager deathManager;
 
     [Header("other Starship")]
@@ -72,12 +72,14 @@ public class StarshipController : MonoBehaviour
     // Pour deathTouch
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // if(gameobject.tag == vaisseau) pas obligé, il n'y a queuux deux qui ont des colliders non triggers
-        if (deathTouchOn)
+        if(collision.gameObject.tag == "starship")
         {
-            outlineSR.color = Color.black;
-            deathTouchOn = false;
-            deathManager.Kill(collision.gameObject);
+            if (deathTouchOn)
+            {
+                outlineSR.color = Color.black;
+                deathTouchOn = false;
+                deathManager.Kill(collision.gameObject);
+            }
         }
     }
 
