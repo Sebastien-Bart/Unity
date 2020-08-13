@@ -5,6 +5,9 @@ public class BallController : MonoBehaviour
 {
     public WinMenu winMenu;
 
+    [Header("CameraShake")]
+    public CameraShake camShake;
+
     [Header("Players")]
     public PlayerController leftPlayer;
     public PlayerController rightPlayer;
@@ -47,10 +50,12 @@ public class BallController : MonoBehaviour
         PlayHitParticleAccordingToCollission(collision);
         if (collision.collider.tag == "raquette")
         {
+            camShake.AskLittleShake();
             CalculateNewTrajectory(collision);
         }
         else if (collision.collider.tag == "but")
         {
+            camShake.AskShake();
             rb.velocity = Vector2.zero;
             StartCoroutine("Goal");
         }
@@ -134,6 +139,7 @@ public class BallController : MonoBehaviour
         ParticleSystem goalP = Instantiate(goalParticle);
         goalP.transform.position = transform.position;
         goalP.Play();
+        camShake.AskShake();
         yield return new WaitForSeconds(1f);
 
         if (transform.position.x > 0)

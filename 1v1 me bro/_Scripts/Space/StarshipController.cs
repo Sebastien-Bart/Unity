@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class StarshipController : MonoBehaviour
 {
+    [Header("TMP ------ points")]
+    public int points = 0;
+
+    [Header("TpOffCamera")]
+    public TpOffCamera tpOffCamera;
+
     [Header("Death Manager")]
     public DeathManager deathManager;
 
@@ -32,14 +38,6 @@ public class StarshipController : MonoBehaviour
     private Quaternion spawnRot;
     public Quaternion SpawnRot { get => spawnRot;}
 
-    // Off camera related attributes
-    private float minXcam;
-    private float maxXcam;
-    private float minYcam;
-    private float maxYcam;
-    private Camera cam;
-
-    
     private Rigidbody2D rb;
 
 
@@ -48,13 +46,6 @@ public class StarshipController : MonoBehaviour
         spawnPos = transform.position;
         spawnRot = transform.rotation;
         baseShipSpeed = shipSpeed;
-
-        // Off camera related 
-        cam = Camera.main;
-        minXcam = cam.ScreenToWorldPoint(Vector3.zero).x;
-        maxXcam = cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, 0f, 0f)).x;
-        minYcam = cam.ScreenToWorldPoint(Vector3.zero).y;
-        maxYcam = cam.ScreenToWorldPoint(new Vector3(0f, cam.pixelHeight, 0f)).y;
 
         canGoForward = true;
         rotating = true;
@@ -66,7 +57,7 @@ public class StarshipController : MonoBehaviour
     {
         Rotate();
         CheckIfCanGoForward();
-        TPWhenOffCamera();
+        tpOffCamera.TPWhenOffCamera(transform);
     }
 
     // Pour deathTouch
@@ -80,7 +71,17 @@ public class StarshipController : MonoBehaviour
                 deathTouchOn = false;
                 deathManager.Kill(collision.gameObject);
             }
+            if (shipSpeed != baseShipSpeed)
+            {
+                outlineSR.color = Color.green;
+            }
         }
+    }
+
+    public void AddPoint()
+    {
+        points++;
+        // pointsUI.updatePoint() ???
     }
 
     public void CheckIfCanGoForward()
@@ -121,21 +122,5 @@ public class StarshipController : MonoBehaviour
             transform.Rotate(0f, 0f, rotateSpeed * Time.deltaTime);
         }
     }
-
-    private void TPWhenOffCamera()
-    {
-        if (transform.position.x < minXcam)
-            transform.position = new Vector3(maxXcam, transform.position.y, transform.position.z);
-        else if (transform.position.x > maxXcam)
-            transform.position = new Vector3(minXcam, transform.position.y, transform.position.z);
-        else if (transform.position.y < minYcam)
-            transform.position = new Vector3(transform.position.x, maxYcam, transform.position.z);
-        else if (transform.position.y > maxYcam)
-            transform.position = new Vector3(transform.position.x, minYcam, transform.position.z);
-    }
-
-    
-
-    
 
 }

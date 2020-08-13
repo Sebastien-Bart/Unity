@@ -22,10 +22,19 @@ public class CameraShake : MonoBehaviour
         {
             StopCoroutine(coroutine);
         }
-        coroutine = StartCoroutine(Shake());
+        coroutine = StartCoroutine(Shake(false));
     }
 
-    public IEnumerator Shake()
+    public void AskLittleShake()
+    {
+        if (running)
+        {
+            StopCoroutine(coroutine);
+        }
+        coroutine = StartCoroutine(Shake(true));
+    }
+
+    private IEnumerator Shake(bool isLittleShake)
     {
         running = true;
         float x, y;
@@ -37,6 +46,11 @@ public class CameraShake : MonoBehaviour
             y = Random.Range(-maxOffset, -0.2f);
         else
             y = Random.Range(0.2f, maxOffset);
+        if (isLittleShake)
+        {
+            x /= 2f;
+            y /= 2f;
+        }
         Vector3 goal = new Vector3(initPos.x + x, initPos.y + y, initPos.z);
         Vector3 newPos;
         while (transform.position != goal)
