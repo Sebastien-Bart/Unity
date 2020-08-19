@@ -5,11 +5,16 @@ using UnityEngine.UI;
 
 public class TouchAndScoreController : MonoBehaviour
 {
+    [Header("OtherTouchAndScoreController")]
+    public TouchAndScoreController otherTouchAndScoreController;
+
+    [Header("Settings")]
     public SpriteRenderer colorAnswer;
     public float colorAnswerSpeed;
     public float scoreFadeSpeed;
     public static float timeOfRandomScore = 3f;
 
+    [Header("Other Settings")]
     public CameraShake cameraShake;
     public GameObject targetFruit;
     public FruitHolderController fruitHolder;
@@ -20,8 +25,9 @@ public class TouchAndScoreController : MonoBehaviour
 
     private bool colorChanging = false;
     private Coroutine colorCouroutine;
+    
     private int points = 0;
-
+    public int Points { get => points;}
 
     public void OnTouch()
     {
@@ -78,8 +84,17 @@ public class TouchAndScoreController : MonoBehaviour
         }
         scoreText.text = points.ToString();
         yield return new WaitForSeconds(2f);
-        winMenu.ActivateMenu();
 
+        bool rightPlayer = transform.position.x > 0;
+        if (points > otherTouchAndScoreController.Points && rightPlayer)
+        {
+            winMenu.SetWinner("right");
+        }
+        else
+        {
+            winMenu.SetWinner("left");
+        }
+        winMenu.ActivateMenu();
     }
 
     private IEnumerator changeColorAnswer(Color targetColor)

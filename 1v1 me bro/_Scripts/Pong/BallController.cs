@@ -166,6 +166,11 @@ public class BallController : MonoBehaviour
 
     private IEnumerator EndGame()
     {
+        if (rightPlayer.points > leftPlayer.points)
+            winMenu.SetWinner("right");
+        else
+            winMenu.SetWinner("left");
+
         yield return new WaitForSeconds(1f);
         winMenu.ActivateMenu();
     }

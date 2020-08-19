@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class DeathManager : MonoBehaviour
@@ -14,11 +13,25 @@ public class DeathManager : MonoBehaviour
 
     public void Kill(GameObject starship)
     {
+        Camera.main.GetComponent<CameraShake>().AskShake();
         StarshipController controller = starship.transform.GetComponent<StarshipController>();
+        GivaHalfStar(controller);
         ParticleSystem deathP = Instantiate(deathParticle, starship.transform.position, Quaternion.identity);
         deathP.Play();
         starship.SetActive(false);
         StartCoroutine(Respawn(starship, controller.SpawnPos, controller.SpawnRot));
+    }
+
+    private void GivaHalfStar(StarshipController killed)
+    {
+        StarshipController other = killed.otherStarship.GetComponent<StarshipController>();
+        int toGive;
+        if (killed.pointManager.Points % 2 != 0)
+            toGive = (killed.pointManager.Points + 1) / 2;
+        else
+            toGive = killed.pointManager.Points / 2;
+        other.pointManager.AddPoints(toGive);
+        killed.pointManager.RemovePoints(toGive);
     }
 
     public IEnumerator Respawn(GameObject starship, Vector2 spawnPos, Quaternion spawnRot)

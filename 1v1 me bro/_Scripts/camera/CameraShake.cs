@@ -48,8 +48,8 @@ public class CameraShake : MonoBehaviour
             y = Random.Range(0.2f, maxOffset);
         if (isLittleShake)
         {
-            x /= 2f;
-            y /= 2f;
+            x /= 3f;
+            y /= 3f;
         }
         Vector3 goal = new Vector3(initPos.x + x, initPos.y + y, initPos.z);
         Vector3 newPos;

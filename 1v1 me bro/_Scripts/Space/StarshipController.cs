@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class StarshipController : MonoBehaviour
 {
-    [Header("TMP ------ points")]
-    public int points = 0;
+    [Header("StarshipPointManager")]
+    public StarshipPointManager pointManager;
 
     [Header("TpOffCamera")]
     public TpOffCamera tpOffCamera;
@@ -76,12 +76,6 @@ public class StarshipController : MonoBehaviour
                 outlineSR.color = Color.green;
             }
         }
-    }
-
-    public void AddPoint()
-    {
-        points++;
-        // pointsUI.updatePoint() ???
     }
 
     public void CheckIfCanGoForward()
