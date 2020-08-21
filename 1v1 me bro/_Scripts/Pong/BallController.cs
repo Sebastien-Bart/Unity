@@ -127,41 +127,47 @@ public class BallController : MonoBehaviour
         prevVel = new Vector2(xVel, yVel);
     }
 
+    private bool GoalCoroutinerunning = false;
+
     private IEnumerator Goal()
     {
-        yield return new WaitForSeconds(0.5f);
-        while (transform.localScale != Vector3.zero)
+        if (!GoalCoroutinerunning)
         {
-            transform.localScale = Vector2.MoveTowards(transform.localScale, Vector3.zero, shrinkSpeed * Time.deltaTime);
-            yield return null;
-        }
-        yield return new WaitForSeconds(0.25f);
-        ParticleSystem goalP = Instantiate(goalParticle);
-        goalP.transform.position = transform.position;
-        goalP.Play();
-        camShake.AskShake();
-        yield return new WaitForSeconds(1f);
+            GoalCoroutinerunning = true;
+            yield return new WaitForSeconds(0.5f);
+            while (transform.localScale != Vector3.zero)
+            {
+                transform.localScale = Vector2.MoveTowards(transform.localScale, Vector3.zero, shrinkSpeed * Time.deltaTime);
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.25f);
+            ParticleSystem goalP = Instantiate(goalParticle);
+            goalP.transform.position = transform.position;
+            goalP.Play();
+            camShake.AskShake();
+            yield return new WaitForSeconds(1f);
 
-        if (transform.position.x > 0)
-            leftPlayer.Goal();
-        else if (transform.position.x < 0)
-            rightPlayer.Goal();
+            if (transform.position.x > 0)
+                leftPlayer.Goal();
+            else if (transform.position.x < 0)
+                rightPlayer.Goal();
 
-        yield return new WaitForSeconds(3f); // Delai a voir selon coroutine displayscore
-        // Verifier si partie n'est pas finie
-        if (leftPlayer.points == 5 || rightPlayer.points == 5)
-        {
-            StartCoroutine("EndGame");
-            yield break;
+            yield return new WaitForSeconds(3f); // Delai a voir selon coroutine displayscore
+            // Verifier si partie n'est pas finie
+            if (leftPlayer.points == 5 || rightPlayer.points == 5)
+            {
+                StartCoroutine("EndGame");
+                yield break;
+            }
+            transform.position = Vector2.zero;
+            while (transform.localScale != initSize)
+            {
+                transform.localScale = Vector3.MoveTowards(transform.localScale, initSize, shrinkSpeed * Time.deltaTime);
+                yield return null;
+            }
+            StartCoroutine(KickOff());
         }
-        transform.position = Vector2.zero;
-        while (transform.localScale != initSize)
-        {
-            transform.localScale = Vector3.MoveTowards(transform.localScale, initSize, shrinkSpeed * Time.deltaTime);
-            yield return null;
-        }
-        //yield return new WaitForSeconds(0.5f);
-        StartCoroutine(KickOff());
+        GoalCoroutinerunning = false;
     }
 
     private IEnumerator EndGame()

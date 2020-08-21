@@ -19,17 +19,17 @@ public class DeathManager : MonoBehaviour
         ParticleSystem deathP = Instantiate(deathParticle, starship.transform.position, Quaternion.identity);
         deathP.Play();
         starship.SetActive(false);
-        StartCoroutine(Respawn(starship, controller.SpawnPos, controller.SpawnRot));
+        StartCoroutine(Respawn(starship, controller.spawnPos, controller.spawnRot));
     }
 
     private void GivaHalfStar(StarshipController killed)
     {
         StarshipController other = killed.otherStarship.GetComponent<StarshipController>();
         int toGive;
-        if (killed.pointManager.Points % 2 != 0)
-            toGive = (killed.pointManager.Points + 1) / 2;
+        if (killed.pointManager.points % 2 != 0)
+            toGive = (killed.pointManager.points + 1) / 2;
         else
-            toGive = killed.pointManager.Points / 2;
+            toGive = killed.pointManager.points / 2;
         other.pointManager.AddPoints(toGive);
         killed.pointManager.RemovePoints(toGive);
     }

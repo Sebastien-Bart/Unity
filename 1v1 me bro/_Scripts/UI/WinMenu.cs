@@ -18,7 +18,7 @@ public class WinMenu : AbstractMenu
 
     public void SetWinner(string winner) // si on est dans Saloon... (nul)
     {
-        if (rightPlayerScreen != null)
+        if (rightWinAnim != null)
         {
             if (winner == "right")
             {

@@ -32,11 +32,9 @@ public class StarshipController : MonoBehaviour
     private bool rotating;
     private bool canGoForward;
 
-    private Vector2 spawnPos; 
-    public Vector2 SpawnPos { get => spawnPos; }
+    public Vector2 spawnPos { get; private set; } 
 
-    private Quaternion spawnRot;
-    public Quaternion SpawnRot { get => spawnRot;}
+    public Quaternion spawnRot { get; private set; }
 
     private Rigidbody2D rb;
 

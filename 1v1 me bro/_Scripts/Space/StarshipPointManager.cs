@@ -6,14 +6,9 @@ using UnityEngine;
 public class StarshipPointManager : MonoBehaviour
 {
     public int requiredPoints = 15;
-
-    private int points = 0;
-    public int Points { get => points; }
-
+    public int points { get; private set; } = 0;
     public WinMenu winMenu;
-
     public TextMeshProUGUI pointsTxt;
-
 
     private void Start()
     {
@@ -26,6 +21,10 @@ public class StarshipPointManager : MonoBehaviour
         pointsTxt.text = points.ToString();
         if (points >= requiredPoints)
         {
+            if (transform.GetComponent<StarshipController>().spawnPos.x < 0)
+                winMenu.SetWinner("left");
+            else
+                winMenu.SetWinner("right");
             winMenu.ActivateMenu();
         }
     }

@@ -63,7 +63,7 @@ public class PowerUpsSpawner : MonoBehaviour
     {
         while (true)
         {
-            if (collectiblesStarHolder.childCount == 0)
+            if (collectiblesStarHolder.childCount <= 1)
             {
                 float r = Random.Range(minDelayStarSpawn, maxDelayStarSpawn);
                 yield return new WaitForSeconds(r);
