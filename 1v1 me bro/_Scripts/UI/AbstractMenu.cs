@@ -28,7 +28,8 @@ public abstract class AbstractMenu : MonoBehaviour
     {
         if (!moving)
         {
-            pauseButton.SetActive(false);
+            if(pauseButton)
+                pauseButton.SetActive(false);
             Pause();
             StartCoroutine(MoveToActivePosWithFadeIn());
         }
@@ -54,7 +55,7 @@ public abstract class AbstractMenu : MonoBehaviour
         paused = false;
     }
 
-    protected IEnumerator MoveToActivePosWithFadeIn()
+    protected virtual IEnumerator MoveToActivePosWithFadeIn()
     {
         moving = true;
         float maxDistance = Vector2.Distance(rect.anchoredPosition, activPos);
@@ -72,7 +73,7 @@ public abstract class AbstractMenu : MonoBehaviour
         moving = false;
     }
 
-    protected IEnumerator MoveToNotActivePosWithFadeOut()
+    protected virtual IEnumerator MoveToNotActivePosWithFadeOut()
     {
         moving = true;
         float maxDistance = Vector2.Distance(rect.anchoredPosition, notActivePos);
@@ -87,11 +88,11 @@ public abstract class AbstractMenu : MonoBehaviour
             rect.anchoredPosition = newPos;
             yield return null;
         }
+        fader.color = new Color(0, 0, 0, 0);
         moving = false;
-        // test
-        yield return new WaitForSecondsRealtime(0.5f);
         Unpause();
-        pauseButton.SetActive(true);
+        if (pauseButton)
+            pauseButton.SetActive(true);
     }
 
 }

@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics.Tracing;
-using UnityEngine;
-
-public class CollectibleStarPowerUp : PowerUp
+﻿public class CollectibleStarPowerUp : PowerUp
 {
     public override void ActivatePowerUp(StarshipController pickerStarship)
     {

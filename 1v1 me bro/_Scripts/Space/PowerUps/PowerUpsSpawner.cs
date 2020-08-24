@@ -35,7 +35,7 @@ public class PowerUpsSpawner : MonoBehaviour
         float y = Random.Range(0f, h - 20);
         Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 18));
         GameObject spawned = Instantiate(toSpawn, parent);
-        toSpawn.transform.position = pos;
+        spawned.transform.position = pos;
     }
 
     private IEnumerator RandomlySpawnRandomPowerUp()

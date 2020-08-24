@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RandomBackgroundColor : MonoBehaviour
 {
@@ -25,9 +23,9 @@ public class RandomBackgroundColor : MonoBehaviour
     {
         if (maincam.backgroundColor == randomColor)
         {
-            randomColor = new Color(Random.Range(0, 0.25f), Random.Range(0, 0.25f), Random.Range(0, 0.25f), 1);
+            randomColor = new Color(Random.Range(0, 0.8f), Random.Range(0, 0.8f), Random.Range(0, 0.8f), 1);
         }
-        Vector4 step = Vector4.MoveTowards(maincam.backgroundColor, randomColor, Time.deltaTime/30f);
+        Vector4 step = Vector4.MoveTowards(maincam.backgroundColor, randomColor, Time.deltaTime/15f);
         maincam.backgroundColor = step;
         backgroundSR.color = (Vector4)maincam.backgroundColor + new Vector4(0.2f, 0.2f, 0.2f);
     }

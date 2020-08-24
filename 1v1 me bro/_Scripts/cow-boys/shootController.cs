@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class shootController : MonoBehaviour
 {
+    public shootController otherShootController;
+
     public Transform player;
     public GameObject bulletPrefab;
     public ParticleSystem shoot_particle;
@@ -27,6 +29,11 @@ public class shootController : MonoBehaviour
             player.GetComponent<AnimationController>().PlayShootAnimation(goodShot);
             StartCoroutine("WaitForNextShootAvailable");
             InstanciateBullet(goodShot);
+            // test
+            if (goodShot)
+            {
+                otherShootController.goodShot = false;
+            }
         }
     }
 

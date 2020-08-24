@@ -9,10 +9,32 @@ public class InGameMenu : AbstractMenu
     public Image soundButtonImg;
     public Sprite soundOn, soundOff;
 
+    protected override void Start()
+    {
+        base.Start();
+        if (AudioListener.volume == 0)
+        {
+            if (soundOff)
+            {
+                soundButtonImg.sprite = soundOff;
+            }
+        }
+        else
+        {
+            if (soundOn)
+            {
+                soundButtonImg.sprite = soundOn;
+            }
+        }
+    }
+
     public void ToMainMenu()
     {
         if (!moving)
+        {
             SceneManager.LoadScene(0);
+            Time.timeScale = 1;
+        }
     }
 
     public void changeSound()
