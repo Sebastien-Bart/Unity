@@ -22,13 +22,14 @@ public class PlayerController : MonoBehaviour
 
     public void MoveWhenPressed()
     {
-        moving = true;
+        if (!InGameMenuNew.Paused)
+            moving = true;
     }
 
     public void ButtonReleased()
     {
-        goUp = !goUp;
-        moving = false;
+            goUp = !goUp;
+            moving = false;
     }
 
     private void FixedUpdate()

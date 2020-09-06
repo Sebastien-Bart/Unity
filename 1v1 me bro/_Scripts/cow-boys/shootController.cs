@@ -13,27 +13,28 @@ public class shootController : MonoBehaviour
     public float fireDelay = 3;
     public bool goodShot = false; // true si countdown fini
 
-    private bool _canShoot = true;
-    public bool canShoot
+    public bool canShoot = true;
+
+    private AudioManager audioManager;
+
+    private void Start()
     {
-        get => _canShoot;
-        set { _canShoot = value; }
+        audioManager = Camera.main.GetComponent<AudioManager>();
     }
 
     public void Shoot()
     {
-        if (canShoot && !InGameMenu.paused)
+        if (canShoot && !InGameMenuNew.Paused)
         {
             Camera.main.GetComponent<CameraShake>().AskShake();
             canShoot = false;
             player.GetComponent<AnimationController>().PlayShootAnimation(goodShot);
-            StartCoroutine("WaitForNextShootAvailable");
+            StartCoroutine("WaitForNextShootAvailable"); 
+            audioManager.PlaySound("shoot");
             InstanciateBullet(goodShot);
             // test
             if (goodShot)
-            {
                 otherShootController.goodShot = false;
-            }
         }
     }
 

@@ -1,12 +1,12 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class AbstractMenu : MonoBehaviour
 {
-    public static bool paused { get; private set; } = false;
+    public static bool Paused { get; protected set; } = false;
 
+    public Image blackFadeQuitEnter;
     public Image fader;
     public float moveSpeed = 15f;
 
@@ -43,16 +43,16 @@ public abstract class AbstractMenu : MonoBehaviour
         }
     }
 
-    protected void Pause()
+    public static void Pause()
     {
         Time.timeScale = 0;
-        paused = true;
+        Paused = true;
     }
 
-    protected void Unpause()
+    public static void Unpause()
     {
         Time.timeScale = 1;
-        paused = false;
+        Paused = false;
     }
 
     protected virtual IEnumerator MoveToActivePosWithFadeIn()
@@ -64,7 +64,7 @@ public abstract class AbstractMenu : MonoBehaviour
         {
             // fade in
             currentDistance = Vector2.Distance(rect.anchoredPosition, activPos);
-            fader.color = new Color(fader.color.r, fader.color.g, fader.color.b, 0.75f - (currentDistance / maxDistance) * 0.75f);
+            fader.color = new Color(fader.color.r, fader.color.g, fader.color.b, 0.85f - (currentDistance / maxDistance) * 0.85f);
             // move
             Vector2 newPos = Vector2.MoveTowards(rect.anchoredPosition, activPos, moveSpeed);
             rect.anchoredPosition = newPos;
@@ -82,9 +82,9 @@ public abstract class AbstractMenu : MonoBehaviour
         {
             // fade out
             currentDistance = Vector2.Distance(rect.anchoredPosition, notActivePos);
-            fader.color = new Color(fader.color.r, fader.color.g, fader.color.b, 0.75f * (currentDistance / maxDistance));
+            fader.color = new Color(fader.color.r, fader.color.g, fader.color.b, 0.85f * (currentDistance / maxDistance));
             // move right
-            Vector2 newPos = Vector2.MoveTowards(rect.anchoredPosition, notActivePos, moveSpeed * 4f);
+            Vector2 newPos = Vector2.MoveTowards(rect.anchoredPosition, notActivePos, moveSpeed * 2f);
             rect.anchoredPosition = newPos;
             yield return null;
         }
@@ -93,6 +93,11 @@ public abstract class AbstractMenu : MonoBehaviour
         Unpause();
         if (pauseButton)
             pauseButton.SetActive(true);
+    }
+
+    protected void ToMainMenu()
+    {
+        LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, 0);
     }
 
 }

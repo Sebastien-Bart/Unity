@@ -25,6 +25,8 @@ public class BallController : MonoBehaviour
     private SpriteRenderer sr;
     private Vector2 prevVel;
 
+    private AudioManager audioManager;
+
 
     void Start()
     {
@@ -33,6 +35,7 @@ public class BallController : MonoBehaviour
         StartCoroutine(KickOff());
         initSize = transform.localScale;
         prevVel = Vector2.zero;
+        audioManager = Camera.main.GetComponent<AudioManager>();
     }
 
     public IEnumerator KickOff()
@@ -50,14 +53,20 @@ public class BallController : MonoBehaviour
         PlayHitParticleAccordingToCollission(collision);
         if (collision.collider.tag == "raquette")
         {
+            audioManager.PlaySound("pongHitPaddle");
             camShake.AskLittleShake();
             CalculateNewTrajectory(collision);
         }
         else if (collision.collider.tag == "but")
         {
+            audioManager.PlaySound("pongHitWall");
             camShake.AskShake();
             rb.velocity = Vector2.zero;
             StartCoroutine("Goal");
+        }
+        else
+        {
+            audioManager.PlaySound("pongHitWall");
         }
     }
 
@@ -135,12 +144,14 @@ public class BallController : MonoBehaviour
         {
             GoalCoroutinerunning = true;
             yield return new WaitForSeconds(0.5f);
+            audioManager.PlaySound("ballShrink");
             while (transform.localScale != Vector3.zero)
             {
                 transform.localScale = Vector2.MoveTowards(transform.localScale, Vector3.zero, shrinkSpeed * Time.deltaTime);
                 yield return null;
             }
             yield return new WaitForSeconds(0.25f);
+            audioManager.PlaySound("pongExplosion");
             ParticleSystem goalP = Instantiate(goalParticle);
             goalP.transform.position = transform.position;
             goalP.Play();
@@ -160,6 +171,7 @@ public class BallController : MonoBehaviour
                 yield break;
             }
             transform.position = Vector2.zero;
+            audioManager.PlaySound("ballRespawn");
             while (transform.localScale != initSize)
             {
                 transform.localScale = Vector3.MoveTowards(transform.localScale, initSize, shrinkSpeed * Time.deltaTime);

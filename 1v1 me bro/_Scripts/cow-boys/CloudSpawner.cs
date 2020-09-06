@@ -42,7 +42,7 @@ public class CloudSpawner : MonoBehaviour
     {
         for (; ; )
         {
-            if (!InGameMenu.paused)
+            if (!InGameMenuNew.Paused)
             {
                 Vector3 newPos = Vector3.MoveTowards(cloud.transform.position, cloud.transform.position + Vector3.right, speed * Time.deltaTime);
                 cloud.transform.position = newPos;

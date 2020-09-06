@@ -1,53 +1,61 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 
 public class WinMenu : AbstractMenu
 {
-    [Header("WinText (PAS SALOON)")]
-    public TextMeshProUGUI winTxt;
+    public WarningBrocoin warningBrocoin;
 
-    [Header("SALOON")]
+    public GameObject brocoin;
+    public TextMeshProUGUI winTxt;
     public GameObject leftWinAnim;
     public GameObject rightWinAnim;
-    public Sprite rightPlayerScreen;
-    public Sprite leftPlayerScreen;
 
-    public void SetWinner(string winner) // si on est dans Saloon... (nul)
+    protected override void Start()
     {
-        if (rightWinAnim != null)
-        {
-            if (winner == "right")
-            {
-                GetComponent<Image>().sprite = rightPlayerScreen;
-                rightWinAnim.SetActive(true);
-            }
-            else
-            {
-                GetComponent<Image>().sprite = leftPlayerScreen;
-                leftWinAnim.SetActive(true);
-            }
-        }
-        else // si on est dans les autres jeux
-        {
-            if (winner == "right")
-                winTxt.text = "RIGHT PLAYER WINS !";
-            else
-                winTxt.text = "LEFT PLAYER WINS !";
-        }
+        base.Start();
+        rect.anchoredPosition = Vector2.zero;
+        notActivePos = new Vector2(rect.anchoredPosition.x + rect.rect.width, rect.anchoredPosition.y);
+        rect.anchoredPosition = notActivePos;
+        if (PlayerPrefs.GetInt("idxGameOfDay", -1) == SceneManager.GetActiveScene().buildIndex || PlayerPrefs.GetInt("fullAccess", 0) == 1)
+            brocoin.gameObject.SetActive(false);
     }
 
-    public void ToMainMenu()
+    public void SetWinner(string winner)
     {
-        SceneManager.LoadScene(0);
+        if (winner == "right")
+        {
+            winTxt.text = "RIGHT PLAYER WINS !";
+            //rightWinAnim.SetActive(true);
+        }
+        else if (winner == "left")
+        {
+            winTxt.text = "LEFT PLAYER WINS !";
+            //leftWinAnim.SetActive(true);
+        }
+        else
+        {
+            winTxt.text = "IT'S A TIE !";
+        }
     }
 
     public void Replay()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        int buildIdx = SceneManager.GetActiveScene().buildIndex;
+        if (buildIdx == PlayerPrefs.GetInt("idxGameOfDay", -1) || PlayerPrefs.GetInt("fullAccess", 0) == 1)
+        {
+            LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
+            Unpause();
+        }
+        else if (PlayerPrefs.GetInt("brocoins", 0) > 0)
+        {
+            PlayerPrefs.SetInt("brocoins", PlayerPrefs.GetInt("brocoins", 0) - 1);
+            PlayerPrefs.Save();
+            LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
+            Unpause();
+        }
+        else
+            warningBrocoin.ShowWarning();
     }
 
 }

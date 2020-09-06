@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class HelpMenu : AbstractMenu
 {
@@ -9,7 +6,11 @@ public class HelpMenu : AbstractMenu
     protected override void Start()
     {
         base.Start();
-        base.ActivateMenu();
+        if (PlayerPrefs.GetInt("helpMenus", 1) == 1)
+        {
+            Time.timeScale = 0;
+            base.ActivateMenu();
+        }
     }
 
 }

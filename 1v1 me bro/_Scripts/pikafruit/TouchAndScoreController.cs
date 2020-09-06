@@ -12,7 +12,7 @@ public class TouchAndScoreController : MonoBehaviour
     public SpriteRenderer colorAnswer;
     public float colorAnswerSpeed;
     public float scoreFadeSpeed;
-    public static float timeOfRandomScore = 3f;
+    public static float timeOfRandomScore = 2f;
 
     [Header("Other Settings")]
     public CameraShake cameraShake;
@@ -31,7 +31,7 @@ public class TouchAndScoreController : MonoBehaviour
 
     public void OnTouch()
     {
-        if (canTouch)
+        if (canTouch && !InGameMenuNew.Paused)
         {
             if (fruitHolder.actualFruit == targetFruit.GetComponent<Image>().sprite)
             {
@@ -89,6 +89,10 @@ public class TouchAndScoreController : MonoBehaviour
         if (points > otherTouchAndScoreController.Points && rightPlayer)
         {
             winMenu.SetWinner("right");
+        }
+        else if (points == otherTouchAndScoreController.Points)
+        {
+            winMenu.SetWinner("tie");
         }
         else
         {

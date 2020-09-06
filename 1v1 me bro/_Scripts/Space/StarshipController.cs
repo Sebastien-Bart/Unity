@@ -86,7 +86,7 @@ public class StarshipController : MonoBehaviour
 
     public void GoForward()
     {
-        if (canGoForward)
+        if (canGoForward && !InGameMenuNew.Paused)
         {
             rotating = false;
             canGoForward = false;

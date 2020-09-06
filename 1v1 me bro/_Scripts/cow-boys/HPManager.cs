@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 public class HPManager : MonoBehaviour
@@ -19,6 +17,13 @@ public class HPManager : MonoBehaviour
     private static float waitTimeToWinScreen = 3f;
     [SerializeField] [Range(0, 5)] private int hp = 5;
 
+    private AudioManager audioManager;
+
+    private void Start()
+    {
+        audioManager = Camera.main.GetComponent<AudioManager>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "bullet")
@@ -33,15 +38,14 @@ public class HPManager : MonoBehaviour
 
     private void TakeOneDamage(Collider2D collision)
     {
+        audioManager.PlaySound("touched");
         otherPlayerAnim.PlayRoundVictoryAnimation();
         hp--;
         HP_holder.GetComponent<SpriteRenderer>().sprite = sprites[hp];
         Destroy(collision.gameObject);
         hurt_particle.Play();
         if (hp == 0)
-        {
             Death();
-        }
         else
         {
             transform.GetComponent<AnimationController>().PlayHurtAnimation();
@@ -56,6 +60,7 @@ public class HPManager : MonoBehaviour
             item.StopAllCoroutines();
             item.canShoot = false;
         }
+        audioManager.PlaySound("death");
         death_particle.Play();
         transform.GetComponent<AnimationController>().PlayDead();
         StartCoroutine(WaitAndWinScreeen());
