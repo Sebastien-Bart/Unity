@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
     public void MoveWhenPressed()
     {
-        if (!InGameMenuNew.Paused)
+        if (!AbstractMenu.Paused)
             moving = true;
     }
 

@@ -6,7 +6,7 @@ public class TitleFontSize : MonoBehaviour
     public TextMeshProUGUI titleGoodSize;
     public TextMeshProUGUI[] titlesBadSize;
 
-    void Start()
+    void Awake()
     {
         float fSize = titleGoodSize.fontSize;
         foreach (TextMeshProUGUI title in titlesBadSize)

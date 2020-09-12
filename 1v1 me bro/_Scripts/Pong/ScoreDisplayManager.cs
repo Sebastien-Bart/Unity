@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -33,7 +32,7 @@ public class ScoreDisplayManager : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(1f);
-        Camera.main.GetComponent<AudioManager>().PlaySound("updatePoint");
+        AudioManagerForOneGame.am.PlaySound("updatePoint");
         rightPlayerScoreTxt.text = rightPlayer.points.ToString();
         leftPlayerScoreTxt.text = leftPlayer.points.ToString();
         yield return new WaitForSeconds(1f);

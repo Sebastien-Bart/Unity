@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -19,8 +20,6 @@ public class MainMenu : MonoBehaviour
     public float maxTimeCounter;
     public float minTimeCounter;
 
-    private AudioManager audioManager;
-
     /* 
     Build Index / idxGameOfDay :
     1 = Cow-boys
@@ -29,11 +28,15 @@ public class MainMenu : MonoBehaviour
     4 = Stars war
     */
 
-    void Start()
+    IEnumerator Start()
     {
+        blackFadeQuitEnter.gameObject.SetActive(true);
+        while (!SplashScreen.isFinished)
+        {
+            yield return null;
+        }
         LoadSceneUtility.FadeOnLevelLoaded(blackFadeQuitEnter);
-        audioManager = Camera.main.GetComponent<AudioManager>();
-        if (!fullAccess)
+        if (!fullAccess) // PlayerPrefs.GetInt("fullAccess", -1) == 1
         {
             foreach (Image grayfade in grayFades)
                 grayfade.color = new Color(grayfade.color.r, grayfade.color.g, grayfade.color.b, 0.75f);
@@ -58,85 +61,102 @@ public class MainMenu : MonoBehaviour
                 Transform playBtn = playButtons[idxGameOfDay - 1];
                 playBtn.GetChild(0).gameObject.SetActive(true); //txt
                 playBtn.GetChild(1).gameObject.SetActive(false); //brocoin img
-                audioManager.PlayMainTheme();
+                AudioManagerForOneGame.am.PlayMainTheme();
             }
         }
         else
         {
             PlayerPrefs.SetInt("fullAccess", 1);
-            audioManager.PlayMainTheme();
+            AudioManagerForOneGame.am.PlayMainTheme();
         }
     }
 
     private IEnumerator ChooseRandomGame()
     {
+        yield return null;
+
         string soundName;
         int modulo = grayFades.Length;
         Color grayColor = grayFades[0].color;
         int curIdx = 0;
-        float stop = UnityEngine.Random.Range(minTimeCounter, maxTimeCounter);
-        float counter = 0f;
+        float stopTime = UnityEngine.Random.Range(minTimeCounter, maxTimeCounter);
+        float counter = stopTime;
         int previousIdx = 0;
-        while (counter < stop - 10) // de r a 10
+
+        while (counter > 0)
+        {
+            float waitTime = Mathf.Clamp(stopTime / (counter * 15f), 0f, 1f);
+            counter -= waitTime;
+            ChangeColors(previousIdx, curIdx, grayColor);
+            soundName = "RandomPick" + curIdx;
+            AudioManagerForOneGame.am.PlaySound(soundName);
+            previousIdx = curIdx;
+            curIdx = (curIdx + 1) % modulo;
+            yield return new WaitForSeconds(waitTime);
+        }
+
+        /*
+        while (counter < stopTime - 10) // de r a 10
         {
             counter += 0.2f;
             soundName = "RandomPick" + curIdx;
-            audioManager.PlaySound(soundName);
+            AudioManagerForOneGame.am.PlaySound(soundName);
             ChangeColors(previousIdx, curIdx, grayColor);
             previousIdx = curIdx;
             curIdx = (curIdx + 1) % modulo;
             yield return new WaitForSeconds(0.2f);
         }
-        while (counter < stop - 6) // de 10 a 6
+        while (counter < stopTime - 6) // de 10 a 6
         {
             counter += 0.3f;
             soundName = "RandomPick" + curIdx;
-            audioManager.PlaySound(soundName);
+            AudioManagerForOneGame.am.PlaySound(soundName);
             ChangeColors(previousIdx, curIdx, grayColor);
             previousIdx = curIdx;
             curIdx = (curIdx + 1) % modulo;
             yield return new WaitForSeconds(0.3f);
         }
-        while (counter < stop - 3) // de 6 a 3
+        while (counter < stopTime - 3) // de 6 a 3
         {
             counter += 0.45f;
             soundName = "RandomPick" + curIdx;
-            audioManager.PlaySound(soundName);
+            AudioManagerForOneGame.am.PlaySound(soundName);
             ChangeColors(previousIdx, curIdx, grayColor);
             previousIdx = curIdx;
             curIdx = (curIdx + 1) % modulo;
             yield return new WaitForSeconds(0.45f);
         }
-        while (counter < stop) // de 3 a 0
+        while (counter < stopTime) // de 3 a 0
         {
             counter += 0.7f;
             soundName = "RandomPick" + curIdx;
-            audioManager.PlaySound(soundName);
+            AudioManagerForOneGame.am.PlaySound(soundName);
             ChangeColors(previousIdx, curIdx, grayColor);
             previousIdx = curIdx;
             curIdx = (curIdx + 1) % modulo;
             yield return new WaitForSeconds(0.7f);
         }
+        */
         // game is chosen
         int idx = previousIdx;
         soundName = "RandomPick" + idx;
         counter = 0f;
         Image gameGrayFade = grayFades[idx];
-        while (counter < 1.5f)
+        while (counter < 1f)
         {
             gameGrayFade.color = new Color(grayColor.r, grayColor.g, grayColor.b, 0.75f);
-            yield return new WaitForSeconds(0.3f);
-            counter += 0.3f;
-            audioManager.PlaySound(soundName);
+            yield return new WaitForSeconds(0.2f);
+            counter += 0.2f;
+            AudioManagerForOneGame.am.PlaySound(soundName);
             gameGrayFade.color = new Color(grayColor.r, grayColor.g, grayColor.b, 0f);
-            yield return new WaitForSeconds(0.3f);
-            counter += 0.3f;
+            yield return new WaitForSeconds(0.2f);
+            counter += 0.2f;
         }
         playButtons[idx].GetChild(0).gameObject.SetActive(true);
         playButtons[idx].GetChild(1).gameObject.SetActive(false);
         blocker.SetActive(false);
         PlayerPrefs.SetInt("idxGameOfDay", idx + 1);
-        audioManager.PlayMainTheme();
+        AudioManagerForOneGame.am.PlayMainTheme();
     }
 
 
@@ -151,17 +171,19 @@ public class MainMenu : MonoBehaviour
     {
         if (buildIdx == PlayerPrefs.GetInt("idxGameOfDay", -1) || PlayerPrefs.GetInt("fullAccess", 0) == 1)
         {
+            AudioManagerForOneGame.am.PlaySound("PlayRestart");
             LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
         }
         else if (PlayerPrefs.GetInt("brocoins", 0) > 0)
         {
+            AudioManagerForOneGame.am.PlaySound("PlayRestart");
             PlayerPrefs.SetInt("brocoins", PlayerPrefs.GetInt("brocoins", 0) - 1);
             PlayerPrefs.Save();
             LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
         }
         else
         {
-            audioManager.PlaySound("clickPlayWrong");
+            AudioManagerForOneGame.am.PlaySound("NoBrocoin");
             warningBrocoin.ShowWarning();
         }
     }

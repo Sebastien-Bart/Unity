@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -37,6 +35,7 @@ public class GameCountDown : MonoBehaviour
 
     private void EndTheGame()
     {
+        AudioManagerForOneGame.am.PlaySound("End");
         TouchAndScoreController.canTouch = false;
         targetFruitController.End();
         r1.End();

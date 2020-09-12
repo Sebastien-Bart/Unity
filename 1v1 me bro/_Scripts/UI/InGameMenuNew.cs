@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class InGameMenuNew : AbstractMenu
@@ -10,7 +9,6 @@ public class InGameMenuNew : AbstractMenu
 
     protected override void Start()
     {
-        LoadSceneUtility.FadeOnLevelLoaded(blackFadeQuitEnter);
         base.Start();
         if (PlayerPrefs.GetInt("sound", 1) == 1)
             soundImg.sprite = soundImgOn;

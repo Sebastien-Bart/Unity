@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Diagnostics.Tracing;
 using UnityEngine;
 
 public class MissileBehavior : MonoBehaviour
@@ -41,9 +40,8 @@ public class MissileBehavior : MonoBehaviour
             transform.right = Vector2.MoveTowards(transform.right, direction, speedRotation * Time.deltaTime);
         }
         else
-        {
             movement = Vector2.MoveTowards(transform.position, transform.position + transform.right, speed * Time.deltaTime);
-        }
+
         transform.position = movement;
     }
 
@@ -51,7 +49,6 @@ public class MissileBehavior : MonoBehaviour
     {
         ParticleSystem p = Instantiate(explosion, transform.position, Quaternion.identity);
         p.Play();
-        // SI CEST UN AUTRE MISSILE ?
         if (collision.gameObject.tag == "starship")
         {
             deathManager.Kill(collision.gameObject);
@@ -76,6 +73,11 @@ public class MissileBehavior : MonoBehaviour
         ParticleSystem p = Instantiate(explosion, transform.position, Quaternion.identity);
         p.Play();
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        AudioManagerForOneGame.am.PlaySound("Explosion");
     }
 
 }

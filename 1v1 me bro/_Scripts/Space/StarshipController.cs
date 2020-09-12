@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StarshipController : MonoBehaviour
@@ -38,7 +36,6 @@ public class StarshipController : MonoBehaviour
 
     private Rigidbody2D rb;
 
-
     void Start()
     {
         spawnPos = transform.position;
@@ -63,15 +60,14 @@ public class StarshipController : MonoBehaviour
     {
         if(collision.gameObject.tag == "starship")
         {
+            AudioManagerForOneGame.am.PlaySound("Contact");
             if (deathTouchOn)
             {
                 outlineSR.color = Color.black;
                 deathTouchOn = false;
                 deathManager.Kill(collision.gameObject);
-            }
-            if (shipSpeed != baseShipSpeed)
-            {
-                outlineSR.color = Color.green;
+                if (shipSpeed != baseShipSpeed)
+                    outlineSR.color = Color.green;
             }
         }
     }
@@ -86,33 +82,35 @@ public class StarshipController : MonoBehaviour
 
     public void GoForward()
     {
-        if (canGoForward && !InGameMenuNew.Paused)
+        if (gameObject.activeSelf)
         {
-            rotating = false;
-            canGoForward = false;
-            rb.AddRelativeForce(new Vector2(shipSpeed, 0f), ForceMode2D.Impulse);
-
-            if (shipSpeed != baseShipSpeed) // pour power up boost
+            if (canGoForward && !AbstractMenu.Paused)
             {
-                if (!deathTouchOn)
-                    outlineSR.color = Color.black;
+                rotating = false;
+                canGoForward = false;
+                rb.AddRelativeForce(new Vector2(shipSpeed, 0f), ForceMode2D.Impulse);
+
+                if (shipSpeed != baseShipSpeed) // pour power up boost
+                {
+                    AudioManagerForOneGame.am.PlaySound("SpeedBoost");
+                    if (!deathTouchOn)
+                        outlineSR.color = Color.black;
+                    else
+                        outlineSR.color = Color.red;
+                }
                 else
-                    outlineSR.color = Color.red;
+                    AudioManagerForOneGame.am.PlaySound("GoForward");
+                shipSpeed = baseShipSpeed;
             }
-            shipSpeed = baseShipSpeed; 
         }
     }
 
     private void Rotate()
     {
         if (rb.velocity.sqrMagnitude < minMagSqrAbleRotate)
-        {
             rotating = true;
-        }
         if (rotating)
-        {
             transform.Rotate(0f, 0f, rotateSpeed * Time.deltaTime);
-        }
     }
 
 }

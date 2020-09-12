@@ -25,9 +25,8 @@ public class TouchAndScoreController : MonoBehaviour
 
     private bool colorChanging = false;
     private Coroutine colorCouroutine;
-    
-    private int points = 0;
-    public int Points { get => points;}
+
+    public int Points { get; private set; } = 0;
 
     public void OnTouch()
     {
@@ -35,7 +34,8 @@ public class TouchAndScoreController : MonoBehaviour
         {
             if (fruitHolder.actualFruit == targetFruit.GetComponent<Image>().sprite)
             {
-                points++;
+                Points++;
+                AudioManagerForOneGame.am.PlaySound("goodChoice");
                 targetFruit.GetComponent<TargetFruitController>().ReactToGoodAnswer();
                 if (!colorChanging)
                     colorCouroutine = StartCoroutine(changeColorAnswer(new Color32(134, 255, 151, 255)));
@@ -47,7 +47,8 @@ public class TouchAndScoreController : MonoBehaviour
             }
             else
             {
-                points--;
+                AudioManagerForOneGame.am.PlaySound("badChoice");
+                Points--;
                 cameraShake.AskShake();
                 if (!colorChanging)
                     colorCouroutine = StartCoroutine(changeColorAnswer(new Color32(255, 121, 121, 255)));
@@ -82,15 +83,16 @@ public class TouchAndScoreController : MonoBehaviour
             counter += Time.deltaTime;
             yield return null;
         }
-        scoreText.text = points.ToString();
+        AudioManagerForOneGame.am.PlaySound("DisplayScore");
+        scoreText.text = Points.ToString();
         yield return new WaitForSeconds(2f);
 
         bool rightPlayer = transform.position.x > 0;
-        if (points > otherTouchAndScoreController.Points && rightPlayer)
+        if (Points > otherTouchAndScoreController.Points && rightPlayer)
         {
             winMenu.SetWinner("right");
         }
-        else if (points == otherTouchAndScoreController.Points)
+        else if (Points == otherTouchAndScoreController.Points)
         {
             winMenu.SetWinner("tie");
         }

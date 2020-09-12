@@ -14,6 +14,7 @@ public class DeathManager : MonoBehaviour
     public void Kill(GameObject starship)
     {
         Camera.main.GetComponent<CameraShake>().AskShake();
+        AudioManagerForOneGame.am.PlaySound("Explosion");
         StarshipController controller = starship.transform.GetComponent<StarshipController>();
         GivaHalfStar(controller);
         ParticleSystem deathP = Instantiate(deathParticle, starship.transform.position, Quaternion.identity);
@@ -57,6 +58,7 @@ public class DeathManager : MonoBehaviour
         yield return new WaitForSeconds(respawnTime - 1f);
         prepareRespawnP.Stop();
         respawnP.Play();
+        AudioManagerForOneGame.am.PlaySound("Spawn");
         starship.SetActive(true);
     }
 

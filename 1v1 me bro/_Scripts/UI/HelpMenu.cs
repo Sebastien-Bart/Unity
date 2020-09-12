@@ -11,6 +11,8 @@ public class HelpMenu : AbstractMenu
             Time.timeScale = 0;
             base.ActivateMenu();
         }
+        else
+            LoadSceneUtility.FadeOnLevelLoaded(blackFadeQuitEnter);
     }
 
 }

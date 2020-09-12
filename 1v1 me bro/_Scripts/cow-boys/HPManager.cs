@@ -17,13 +17,6 @@ public class HPManager : MonoBehaviour
     private static float waitTimeToWinScreen = 3f;
     [SerializeField] [Range(0, 5)] private int hp = 5;
 
-    private AudioManager audioManager;
-
-    private void Start()
-    {
-        audioManager = Camera.main.GetComponent<AudioManager>();
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "bullet")
@@ -38,7 +31,7 @@ public class HPManager : MonoBehaviour
 
     private void TakeOneDamage(Collider2D collision)
     {
-        audioManager.PlaySound("touched");
+        AudioManagerForOneGame.am.PlaySound("touched");
         otherPlayerAnim.PlayRoundVictoryAnimation();
         hp--;
         HP_holder.GetComponent<SpriteRenderer>().sprite = sprites[hp];
@@ -60,7 +53,7 @@ public class HPManager : MonoBehaviour
             item.StopAllCoroutines();
             item.canShoot = false;
         }
-        audioManager.PlaySound("death");
+        AudioManagerForOneGame.am.PlaySound("death");
         death_particle.Play();
         transform.GetComponent<AnimationController>().PlayDead();
         StartCoroutine(WaitAndWinScreeen());
@@ -70,13 +63,9 @@ public class HPManager : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTimeToWinScreen);
         if (transform.position.x > 0)
-        {
             winMenu.SetWinner("left");
-        }
         else
-        {
             winMenu.SetWinner("right");
-        }
         winMenu.ActivateMenu();
     }
 }

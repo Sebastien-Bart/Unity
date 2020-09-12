@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class SettingsMenu : AbstractMenu
 {
-    public TextMeshProUGUI musicBtnTxt, soundBtnTxt, helpMenusBtnTxt;
+    public TextMeshProUGUI musicBtnTxt, soundBtnTxt, helpMenusBtnTxt, cameraShakeBtnTxt;
 
     protected override void Start()
     {
@@ -15,6 +16,8 @@ public class SettingsMenu : AbstractMenu
             soundBtnTxt.text = "X";
         if (PlayerPrefs.GetInt("helpMenus", 1) == 0)
             helpMenusBtnTxt.text = "X";
+        if (PlayerPrefs.GetInt("cameraShake", 1) == 0)
+            cameraShakeBtnTxt.text = "X";
 
         notActivePos = new Vector2(rect.rect.width, 0);
         rect.anchoredPosition = notActivePos;
@@ -46,6 +49,8 @@ public class SettingsMenu : AbstractMenu
             PlayerPrefs.SetInt(keyPlayerPref, 1);
             btnTxt.text = "";
         }
+        if (keyPlayerPref == "music")
+            Array.Find(AudioManagerForOneGame.am.sounds, sound => sound.name == "MainTheme").source.volume = PlayerPrefs.GetInt(keyPlayerPref);
     }
     
 }

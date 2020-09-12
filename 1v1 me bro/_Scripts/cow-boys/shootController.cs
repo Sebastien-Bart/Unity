@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class shootController : MonoBehaviour
@@ -15,26 +14,18 @@ public class shootController : MonoBehaviour
 
     public bool canShoot = true;
 
-    private AudioManager audioManager;
-
-    private void Start()
-    {
-        audioManager = Camera.main.GetComponent<AudioManager>();
-    }
-
     public void Shoot()
     {
-        if (canShoot && !InGameMenuNew.Paused)
+        if (canShoot && !AbstractMenu.Paused)
         {
+            if (goodShot)
+                otherShootController.goodShot = false;
             Camera.main.GetComponent<CameraShake>().AskShake();
             canShoot = false;
             player.GetComponent<AnimationController>().PlayShootAnimation(goodShot);
             StartCoroutine("WaitForNextShootAvailable"); 
-            audioManager.PlaySound("shoot");
+            AudioManagerForOneGame.am.PlaySound("shoot");
             InstanciateBullet(goodShot);
-            // test
-            if (goodShot)
-                otherShootController.goodShot = false;
         }
     }
 
@@ -53,7 +44,7 @@ public class shootController : MonoBehaviour
 
     private void InstanciateBullet(bool goodShot)
     {
-        GameObject bullet = Object.Instantiate(bulletPrefab);
+        GameObject bullet = Instantiate(bulletPrefab);
         bullet.GetComponent<bulletController>().SetPositionAndDirection(player, goodShot, shoot_particle);
     }
 }

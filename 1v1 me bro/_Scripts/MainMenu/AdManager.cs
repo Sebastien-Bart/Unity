@@ -33,6 +33,7 @@ public class AdManager : MonoBehaviour, IUnityAdsListener
         {
             PlayerPrefs.SetInt("brocoins", PlayerPrefs.GetInt("brocoins", 0) + 1);
             PlayerPrefs.Save();
+            AudioManagerForOneGame.am.PlaySound("OneBrocoin");
         }
     }
 

@@ -8,8 +8,10 @@ public class WinMenu : AbstractMenu
 
     public GameObject brocoin;
     public TextMeshProUGUI winTxt;
+    /*
     public GameObject leftWinAnim;
     public GameObject rightWinAnim;
+    */
 
     protected override void Start()
     {
@@ -44,18 +46,23 @@ public class WinMenu : AbstractMenu
         int buildIdx = SceneManager.GetActiveScene().buildIndex;
         if (buildIdx == PlayerPrefs.GetInt("idxGameOfDay", -1) || PlayerPrefs.GetInt("fullAccess", 0) == 1)
         {
+            AudioManagerMenu.am.PlaySound("PlayRestart");
             LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
             Unpause();
         }
         else if (PlayerPrefs.GetInt("brocoins", 0) > 0)
         {
+            AudioManagerMenu.am.PlaySound("PlayRestart");
             PlayerPrefs.SetInt("brocoins", PlayerPrefs.GetInt("brocoins", 0) - 1);
             PlayerPrefs.Save();
             LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
             Unpause();
         }
         else
+        {
+            AudioManagerMenu.am.PlaySound("NoBrocoin");
             warningBrocoin.ShowWarning();
+        }
     }
 
 }

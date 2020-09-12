@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -19,12 +18,17 @@ public class StartCountDown : MonoBehaviour
 
     private IEnumerator begin()
     {
+        yield return new WaitForSeconds(0.2f);
+        AudioManagerForOneGame.am.PlaySound("panneauChange");
         startCountDownTxt.text = "3";
         yield return new WaitForSeconds(1f);
+        AudioManagerForOneGame.am.PlaySound("panneauChange");
         startCountDownTxt.text = "2";
         yield return new WaitForSeconds(1f);
+        AudioManagerForOneGame.am.PlaySound("panneauChange");
         startCountDownTxt.text = "1";
         yield return new WaitForSeconds(1f);
+        AudioManagerForOneGame.am.PlaySound("panneauGo");
         startCountDownTxt.text = "GO!";
         yield return new WaitForSeconds(0.5f);
 

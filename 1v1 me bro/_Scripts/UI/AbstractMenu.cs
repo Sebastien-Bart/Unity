@@ -28,9 +28,10 @@ public abstract class AbstractMenu : MonoBehaviour
     {
         if (!moving)
         {
-            if(pauseButton)
-                pauseButton.SetActive(false);
+            AudioManagerMenu.am.PlaySound("clickPause");
             Pause();
+            if (pauseButton)
+                pauseButton.SetActive(false);
             StartCoroutine(MoveToActivePosWithFadeIn());
         }
     }
@@ -39,6 +40,7 @@ public abstract class AbstractMenu : MonoBehaviour
     {
         if (!moving)
         {
+            AudioManagerMenu.am.PlaySound("clickResume");
             StartCoroutine(MoveToNotActivePosWithFadeOut());
         }
     }
@@ -97,6 +99,13 @@ public abstract class AbstractMenu : MonoBehaviour
 
     protected void ToMainMenu()
     {
+        AudioManagerMenu.am.PlaySound("Quit");
+        //AudioSource source = System.Array.Find(AudioManagerMenu.am.sounds, sound => sound.name == "Quit").source;
+        //AudioSource s = gameObject.AddComponent<AudioSource>();
+        //s.clip = source.clip;
+        //s.volume = source.volume;
+        //s.pitch = source.pitch;
+        //s.Play();
         LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, 0);
     }
 

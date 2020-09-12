@@ -25,9 +25,6 @@ public class BallController : MonoBehaviour
     private SpriteRenderer sr;
     private Vector2 prevVel;
 
-    private AudioManager audioManager;
-
-
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -35,17 +32,16 @@ public class BallController : MonoBehaviour
         StartCoroutine(KickOff());
         initSize = transform.localScale;
         prevVel = Vector2.zero;
-        audioManager = Camera.main.GetComponent<AudioManager>();
     }
 
     public IEnumerator KickOff()
     {
-        prevVel = Vector2.zero;
         int x = 1;
-        if ((int)UnityEngine.Random.Range(0,2) == 0)
+        if (Random.Range(0,2) == 0)
             x = -1;
         yield return new WaitForSeconds(0.5f);
         rb.velocity = new Vector2(x*startSpeed, 0);
+        prevVel = rb.velocity;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -53,20 +49,20 @@ public class BallController : MonoBehaviour
         PlayHitParticleAccordingToCollission(collision);
         if (collision.collider.tag == "raquette")
         {
-            audioManager.PlaySound("pongHitPaddle");
+            AudioManagerForOneGame.am.PlaySound("pongHitPaddle");
             camShake.AskLittleShake();
             CalculateNewTrajectory(collision);
         }
         else if (collision.collider.tag == "but")
         {
-            audioManager.PlaySound("pongHitWall");
+            AudioManagerForOneGame.am.PlaySound("pongHitWall");
             camShake.AskShake();
             rb.velocity = Vector2.zero;
             StartCoroutine("Goal");
         }
         else
         {
-            audioManager.PlaySound("pongHitWall");
+            AudioManagerForOneGame.am.PlaySound("pongHitWall");
         }
     }
 
@@ -98,19 +94,16 @@ public class BallController : MonoBehaviour
 
     private void CalculateNewTrajectory(Collision2D collision)
     {
-        float nextMagnitudeSqr = 0;
+        float nextMagnitudeSqr;
 
-        if (prevVel.sqrMagnitude > rb.velocity.sqrMagnitude) // si mauvaise collision (coin de raquette)
+        if (prevVel.sqrMagnitude > rb.velocity.sqrMagnitude) // si coin de raquette
             nextMagnitudeSqr = (prevVel * acceleration).sqrMagnitude;
         else
             nextMagnitudeSqr = (rb.velocity * acceleration).sqrMagnitude;
 
         if (nextMagnitudeSqr > maxSpeedSqr)
-        {
             nextMagnitudeSqr = maxSpeedSqr;
-        }
             
-
         float tranche = collision.collider.transform.localScale.y / 8;
         float segment = Mathf.RoundToInt((transform.position.y - collision.collider.transform.position.y) / tranche);
 
@@ -133,7 +126,7 @@ public class BallController : MonoBehaviour
         float yVel = yDirection * Mathf.Sin(angle * Mathf.Deg2Rad) * Mathf.Sqrt(nextMagnitudeSqr);
 
         rb.velocity = new Vector2(xVel, yVel);
-        prevVel = new Vector2(xVel, yVel);
+        prevVel = rb.velocity;
     }
 
     private bool GoalCoroutinerunning = false;
@@ -144,14 +137,14 @@ public class BallController : MonoBehaviour
         {
             GoalCoroutinerunning = true;
             yield return new WaitForSeconds(0.5f);
-            audioManager.PlaySound("ballShrink");
+            AudioManagerForOneGame.am.PlaySound("ballShrink");
             while (transform.localScale != Vector3.zero)
             {
                 transform.localScale = Vector2.MoveTowards(transform.localScale, Vector3.zero, shrinkSpeed * Time.deltaTime);
                 yield return null;
             }
             yield return new WaitForSeconds(0.25f);
-            audioManager.PlaySound("pongExplosion");
+            AudioManagerForOneGame.am.PlaySound("pongExplosion");
             ParticleSystem goalP = Instantiate(goalParticle);
             goalP.transform.position = transform.position;
             goalP.Play();
@@ -163,7 +156,7 @@ public class BallController : MonoBehaviour
             else if (transform.position.x < 0)
                 rightPlayer.Goal();
 
-            yield return new WaitForSeconds(3f); // Delai a voir selon coroutine displayscore
+            yield return new WaitForSeconds(2.5f); // Delai a voir selon coroutine displayscore
             // Verifier si partie n'est pas finie
             if (leftPlayer.points == 5 || rightPlayer.points == 5)
             {
@@ -171,7 +164,7 @@ public class BallController : MonoBehaviour
                 yield break;
             }
             transform.position = Vector2.zero;
-            audioManager.PlaySound("ballRespawn");
+            AudioManagerForOneGame.am.PlaySound("ballRespawn");
             while (transform.localScale != initSize)
             {
                 transform.localScale = Vector3.MoveTowards(transform.localScale, initSize, shrinkSpeed * Time.deltaTime);
@@ -184,6 +177,7 @@ public class BallController : MonoBehaviour
 
     private IEnumerator EndGame()
     {
+        AudioManagerForOneGame.am.PlaySound("End");
         if (rightPlayer.points > leftPlayer.points)
             winMenu.SetWinner("right");
         else

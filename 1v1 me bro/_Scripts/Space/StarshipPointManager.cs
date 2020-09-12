@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -21,12 +20,19 @@ public class StarshipPointManager : MonoBehaviour
         pointsTxt.text = points.ToString();
         if (points >= requiredPoints)
         {
+            AudioManagerForOneGame.am.PlaySound("Win");
             if (transform.GetComponent<StarshipController>().spawnPos.x < 0)
                 winMenu.SetWinner("left");
             else
                 winMenu.SetWinner("right");
-            winMenu.ActivateMenu();
+            StartCoroutine(WaitWinScreen());
         }
+    }
+
+    private IEnumerator WaitWinScreen()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        winMenu.ActivateMenu();
     }
 
     public void RemovePoints(int toRemove)

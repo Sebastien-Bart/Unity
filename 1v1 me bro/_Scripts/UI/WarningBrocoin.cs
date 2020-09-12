@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class WarningBrocoin : MonoBehaviour
 {
@@ -23,14 +22,13 @@ public class WarningBrocoin : MonoBehaviour
     {
         warning.SetActive(true);
         blackFade.SetActive(true);
-        warningAnim.Play("warningBrocoin");
-        blackFadeAnim.Play("BlackFadeWarning");
     }
 
     public void QuitWarning()
     {
         if (!quitRunning && !warningAnim.GetCurrentAnimatorStateInfo(0).IsName("warningBrocoin"))
         {
+            AudioManagerMenu.am.PlaySound("WarningOut");
             quitRunning = true;
             warningAnim.Play("warningBrocoinOut");
             blackFadeAnim.Play("BlackFadeWarningOut");
