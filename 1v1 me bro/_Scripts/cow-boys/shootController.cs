@@ -19,7 +19,7 @@ public class shootController : MonoBehaviour
         if (canShoot && !AbstractMenu.Paused)
         {
             if (goodShot)
-                otherShootController.goodShot = false;
+                StartCoroutine(WaitAndDisableOtherShooter());
             Camera.main.GetComponent<CameraShake>().AskShake();
             canShoot = false;
             player.GetComponent<AnimationController>().PlayShootAnimation(goodShot);
@@ -27,6 +27,12 @@ public class shootController : MonoBehaviour
             AudioManagerForOneGame.am.PlaySound("shoot");
             InstanciateBullet(goodShot);
         }
+    }
+
+    private IEnumerator WaitAndDisableOtherShooter()
+    {
+        yield return new WaitForSeconds(0.1f);
+        otherShootController.canShoot = false;
     }
 
     private IEnumerator WaitForNextShootAvailable()

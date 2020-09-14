@@ -24,14 +24,14 @@ public class Credits : MonoBehaviour
     private TextWithInitialFontSize[] arrayTextsStruct;
     private bool running = false;
 
-    private void Awake()
+    private void Start()
     {
         anchorMinOutline = outline.anchorMin;
         anchorMaxOutline = outline.anchorMax;
         anchorMinQuitButton = quitButton.anchorMin;
         anchorMaxQuitButton = quitButton.anchorMax;
-        SetAnchorsToTheirMiddle();
         FillArrayTextsStructAndFontSizeToZero();
+        SetAnchorsToTheirMiddle();
     }
 
     private void FillArrayTextsStructAndFontSizeToZero()
@@ -41,8 +41,9 @@ public class Credits : MonoBehaviour
         for (int i = 0; i < nbTexts; i++)
         {
             TextMeshProUGUI text = holder.GetChild(i).GetComponent<TextMeshProUGUI>();
-            arrayTextsStruct[i] = new TextWithInitialFontSize(text, text.fontSize);
+            text.ForceMeshUpdate();
             text.enableAutoSizing = false;
+            arrayTextsStruct[i] = new TextWithInitialFontSize(text, text.fontSize);
             text.fontSize = 0;
         }
     }

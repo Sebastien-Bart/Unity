@@ -28,9 +28,14 @@ public class TouchAndScoreController : MonoBehaviour
 
     public int Points { get; private set; } = 0;
 
+    private void Start()
+    {
+        canTouch = false;
+    }
+
     public void OnTouch()
     {
-        if (canTouch && !InGameMenuNew.Paused)
+        if (canTouch && !AbstractMenu.Paused)
         {
             if (fruitHolder.actualFruit == targetFruit.GetComponent<Image>().sprite)
             {

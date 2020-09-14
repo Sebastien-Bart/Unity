@@ -8,7 +8,10 @@ public class TitleFontSize : MonoBehaviour
 
     void Awake()
     {
+        titleGoodSize.enableAutoSizing = true;
+        titleGoodSize.ForceMeshUpdate();
         float fSize = titleGoodSize.fontSize;
+        titleGoodSize.enableAutoSizing = false;
         foreach (TextMeshProUGUI title in titlesBadSize)
             title.fontSize = fSize;
     }

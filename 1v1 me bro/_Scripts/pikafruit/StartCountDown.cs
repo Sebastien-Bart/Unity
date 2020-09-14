@@ -13,10 +13,10 @@ public class StartCountDown : MonoBehaviour
     void Start()
     {
         startCountDownTxt = GetComponent<TextMeshProUGUI>();
-        StartCoroutine(begin());
+        StartCoroutine(Begin());
     }
 
-    private IEnumerator begin()
+    private IEnumerator Begin()
     {
         yield return new WaitForSeconds(0.2f);
         AudioManagerForOneGame.am.PlaySound("panneauChange");

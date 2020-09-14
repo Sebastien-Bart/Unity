@@ -61,9 +61,7 @@ public class BallController : MonoBehaviour
             StartCoroutine("Goal");
         }
         else
-        {
             AudioManagerForOneGame.am.PlaySound("pongHitWall");
-        }
     }
 
     private void PlayHitParticleAccordingToCollission(Collision2D collision)

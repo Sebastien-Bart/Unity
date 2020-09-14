@@ -22,12 +22,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!AbstractMenu.Paused)
             moving = true;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
     }
 
     public void ButtonReleased()
     {
-            goUp = !goUp;
-            moving = false;
+        goUp = !goUp;
+        moving = false;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
     }
 
     private void FixedUpdate()
