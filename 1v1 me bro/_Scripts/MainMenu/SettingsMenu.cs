@@ -2,10 +2,15 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingsMenu : AbstractMenu
 {
     public TextMeshProUGUI musicBtnTxt, soundBtnTxt, helpMenusBtnTxt, cameraShakeBtnTxt;
+
+    public Image curFlagImg;
+    public Sprite flagFR, flagUK;
+    public TextMeshProUGUI langAbbr;
 
     protected override void Start()
     {
@@ -18,6 +23,8 @@ public class SettingsMenu : AbstractMenu
             helpMenusBtnTxt.text = "X";
         if (PlayerPrefs.GetInt("cameraShake", 1) == 0)
             cameraShakeBtnTxt.text = "X";
+        if (PlayerPrefs.GetString("lang", "en") == "fr")
+            curFlagImg.sprite = flagFR;
 
         notActivePos = new Vector2(rect.rect.width, 0);
         rect.anchoredPosition = notActivePos;
@@ -51,6 +58,33 @@ public class SettingsMenu : AbstractMenu
         }
         if (keyPlayerPref == "music")
             Array.Find(AudioManagerForOneGame.am.sounds, sound => sound.name == "MainTheme").source.volume = PlayerPrefs.GetInt(keyPlayerPref);
+    }
+
+    public void ChangeLanguageSettings()
+    {
+        string l;
+        if (PlayerPrefs.GetString("lang", "en") == "en")
+        {
+            PlayerPrefs.SetString("lang", "fr");
+            curFlagImg.sprite = flagFR;
+            l = "fr";
+        }
+        else
+        {
+            PlayerPrefs.SetString("lang", "en");
+            curFlagImg.sprite = flagUK;
+            l = "en";
+        }
+        langAbbr.text = l;
+        UpdateAllTextToLanguage(l);
+    }
+
+    private void UpdateAllTextToLanguage(string l)
+    {
+        TextToLanguage[] toChange = FindObjectsOfType<TextToLanguage>();
+        foreach (TextToLanguage t in toChange)
+            t.ChangeLanguage(l);
+        GetComponent<TitleFontSize>().NormalizeFonts();
     }
     
 }

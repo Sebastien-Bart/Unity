@@ -31,9 +31,9 @@ public class PowerUpsSpawner : MonoBehaviour
 
     private void SpawnPowerUp(GameObject toSpawn, Transform parent)
     {
-        float offset = toSpawn.GetComponent<SpriteRenderer>().bounds.size.x;
-        float x = Random.Range(0f, w - offset);
-        float y = Random.Range(0f, h - offset);
+        float offset = 50f;
+        float x = Random.Range(offset, w - offset);
+        float y = Random.Range(offset, h - offset);
         Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 18));
         GameObject spawned = Instantiate(toSpawn, parent);
         spawned.transform.position = pos;

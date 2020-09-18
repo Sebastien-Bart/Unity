@@ -6,10 +6,6 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-
-    [Header("TMP REMPLACER PAR L'ACHAT")]
-    public bool fullAccess;
-
     public WarningBrocoin warningBrocoin;
 
     public Image blackFadeQuitEnter;
@@ -30,13 +26,14 @@ public class MainMenu : MonoBehaviour
 
     IEnumerator Start()
     {
+        PlayerData.LoadBrocoinsAndAccess();
         blackFadeQuitEnter.gameObject.SetActive(true);
         while (!SplashScreen.isFinished)
         {
             yield return null;
         }
         LoadSceneUtility.FadeOnLevelLoaded(blackFadeQuitEnter);
-        if (!fullAccess) // PlayerPrefs.GetInt("fullAccess", -1) == 1
+        if (!PlayerData.hasFullAccess)
         {
             foreach (Image grayfade in grayFades)
                 grayfade.color = new Color(grayfade.color.r, grayfade.color.g, grayfade.color.b, 0.75f);
@@ -66,7 +63,6 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt("fullAccess", 1);
             AudioManagerForOneGame.am.PlayMainTheme();
         }
     }
@@ -94,49 +90,6 @@ public class MainMenu : MonoBehaviour
             curIdx = (curIdx + 1) % modulo;
             yield return new WaitForSeconds(waitTime);
         }
-
-        /*
-        while (counter < stopTime - 10) // de r a 10
-        {
-            counter += 0.2f;
-            soundName = "RandomPick" + curIdx;
-            AudioManagerForOneGame.am.PlaySound(soundName);
-            ChangeColors(previousIdx, curIdx, grayColor);
-            previousIdx = curIdx;
-            curIdx = (curIdx + 1) % modulo;
-            yield return new WaitForSeconds(0.2f);
-        }
-        while (counter < stopTime - 6) // de 10 a 6
-        {
-            counter += 0.3f;
-            soundName = "RandomPick" + curIdx;
-            AudioManagerForOneGame.am.PlaySound(soundName);
-            ChangeColors(previousIdx, curIdx, grayColor);
-            previousIdx = curIdx;
-            curIdx = (curIdx + 1) % modulo;
-            yield return new WaitForSeconds(0.3f);
-        }
-        while (counter < stopTime - 3) // de 6 a 3
-        {
-            counter += 0.45f;
-            soundName = "RandomPick" + curIdx;
-            AudioManagerForOneGame.am.PlaySound(soundName);
-            ChangeColors(previousIdx, curIdx, grayColor);
-            previousIdx = curIdx;
-            curIdx = (curIdx + 1) % modulo;
-            yield return new WaitForSeconds(0.45f);
-        }
-        while (counter < stopTime) // de 3 a 0
-        {
-            counter += 0.7f;
-            soundName = "RandomPick" + curIdx;
-            AudioManagerForOneGame.am.PlaySound(soundName);
-            ChangeColors(previousIdx, curIdx, grayColor);
-            previousIdx = curIdx;
-            curIdx = (curIdx + 1) % modulo;
-            yield return new WaitForSeconds(0.7f);
-        }
-        */
         // game is chosen
         int idx = previousIdx;
         soundName = "RandomPick" + idx;
@@ -174,11 +127,11 @@ public class MainMenu : MonoBehaviour
             AudioManagerForOneGame.am.PlaySound("PlayRestart");
             LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
         }
-        else if (PlayerPrefs.GetInt("brocoins", 0) > 0)
+        else if (PlayerData.nbBrocoins > 0)
         {
             AudioManagerForOneGame.am.PlaySound("PlayRestart");
-            PlayerPrefs.SetInt("brocoins", PlayerPrefs.GetInt("brocoins", 0) - 1);
-            PlayerPrefs.Save();
+            PlayerData.nbBrocoins -= 1;
+            PlayerData.SaveBrocoinsAndAccess();
             LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);
         }
         else

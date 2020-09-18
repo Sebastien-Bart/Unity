@@ -6,7 +6,12 @@ public class TitleFontSize : MonoBehaviour
     public TextMeshProUGUI titleGoodSize;
     public TextMeshProUGUI[] titlesBadSize;
 
-    void Awake()
+    private void Awake()
+    {
+        NormalizeFonts();
+    }
+
+    public void NormalizeFonts()
     {
         titleGoodSize.enableAutoSizing = true;
         titleGoodSize.ForceMeshUpdate();

@@ -43,6 +43,7 @@ public class LoadSceneUtility
         {
             Vector4 step = Vector4.MoveTowards(blackFadeQuitEnter.color, goal, 2 * Time.unscaledDeltaTime);
             blackFadeQuitEnter.color = step;
+            AudioListener.volume = 1f - step.w;
             yield return null;
         }
     }

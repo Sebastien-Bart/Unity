@@ -3,30 +3,33 @@ using UnityEngine;
 
 public class BrocoinsTxt : MonoBehaviour
 {
+    public static bool needUpdate = false;
+    public static bool txtIsFullAccess = false;
 
     private TextMeshProUGUI brocoinsTxt;
-    private int brocoins;
 
     private void Start()
     {
         brocoinsTxt = gameObject.GetComponent<TextMeshProUGUI>();
-        brocoins = PlayerPrefs.GetInt("brocoins", 0);
-        brocoinsTxt.text = brocoins.ToString();
     }
 
     private void Update()
     {
-        int newBroCoins = PlayerPrefs.GetInt("brocoins", 0);
-        if (newBroCoins != brocoins)
+        if (!PlayerData.hasFullAccess)
         {
-            UpdateBrocoins(newBroCoins);
+            if (needUpdate)
+            {
+                brocoinsTxt.text = PlayerData.nbBrocoins.ToString();
+                needUpdate = false;
+            }
         }
-    }
-
-    private void UpdateBrocoins(int newBroCoins)
-    {
-        brocoins = newBroCoins;
-        brocoinsTxt.text = brocoins.ToString();
+        else if (!txtIsFullAccess)
+        {
+            brocoinsTxt.text = "8";
+            brocoinsTxt.GetComponent<RectTransform>().Rotate(new Vector3(0f, 0f, 90f));
+            brocoinsTxt.font = TMP_Settings.defaultFontAsset;
+            txtIsFullAccess = true;
+        }
     }
 
 }
