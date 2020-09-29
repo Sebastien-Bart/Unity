@@ -119,10 +119,26 @@ public class MainMenu : MonoBehaviour
         grayFades[curIdx].color = new Color(grayColor.r, grayColor.g, grayColor.b, 0f);
     }
 
+    public void UpdateToFullAccessDisplay()
+    {
+        if (PlayerData.hasFullAccess)
+        {
+            foreach (Image fade in grayFades)
+            {
+                fade.color = new Color(0f, 0f, 0f, 0f);
+            }
+            foreach (Transform playButton in playButtons)
+            {
+                playButton.GetChild(0).gameObject.SetActive(true); //txt
+                playButton.GetChild(1).gameObject.SetActive(false); //brocoin img
+            }
+        }
+    }
+
 
     public void LoadLevel(int buildIdx)
     {
-        if (buildIdx == PlayerPrefs.GetInt("idxGameOfDay", -1) || PlayerPrefs.GetInt("fullAccess", 0) == 1)
+        if (buildIdx == PlayerPrefs.GetInt("idxGameOfDay", -1) || PlayerData.hasFullAccess)
         {
             AudioManagerForOneGame.am.PlaySound("PlayRestart");
             LoadSceneUtility.LoadLevelAsyncWithFade(blackFadeQuitEnter, buildIdx);

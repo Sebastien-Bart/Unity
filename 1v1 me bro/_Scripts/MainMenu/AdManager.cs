@@ -7,7 +7,7 @@ public class AdManager : MonoBehaviour, IUnityAdsListener
 
     private void Start()
     {
-        Advertisement.Initialize("3786115", true);
+        Advertisement.Initialize("3786115");
         Advertisement.AddListener(this);
     }
 

@@ -4,13 +4,14 @@ using UnityEngine;
 public class BrocoinsTxt : MonoBehaviour
 {
     public static bool needUpdate = false;
-    public static bool txtIsFullAccess = false;
+    public static bool txtIsFullAccess;
 
     private TextMeshProUGUI brocoinsTxt;
 
     private void Start()
     {
         brocoinsTxt = gameObject.GetComponent<TextMeshProUGUI>();
+        txtIsFullAccess = false;
     }
 
     private void Update()

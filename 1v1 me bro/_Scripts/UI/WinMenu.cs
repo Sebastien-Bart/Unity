@@ -19,7 +19,7 @@ public class WinMenu : AbstractMenu
         rect.anchoredPosition = Vector2.zero;
         notActivePos = new Vector2(rect.anchoredPosition.x + rect.rect.width, rect.anchoredPosition.y);
         rect.anchoredPosition = notActivePos;
-        if (PlayerPrefs.GetInt("idxGameOfDay", -1) == SceneManager.GetActiveScene().buildIndex || PlayerPrefs.GetInt("fullAccess", 0) == 1)
+        if (PlayerPrefs.GetInt("idxGameOfDay", -1) == SceneManager.GetActiveScene().buildIndex || PlayerData.hasFullAccess)
             brocoin.gameObject.SetActive(false);
     }
 

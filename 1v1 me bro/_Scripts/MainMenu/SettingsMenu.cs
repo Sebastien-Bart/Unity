@@ -24,7 +24,10 @@ public class SettingsMenu : AbstractMenu
         if (PlayerPrefs.GetInt("cameraShake", 1) == 0)
             cameraShakeBtnTxt.text = "X";
         if (PlayerPrefs.GetString("lang", "en") == "fr")
+        {
             curFlagImg.sprite = flagFR;
+            langAbbr.text = "fr";
+        }
 
         notActivePos = new Vector2(rect.rect.width, 0);
         rect.anchoredPosition = notActivePos;

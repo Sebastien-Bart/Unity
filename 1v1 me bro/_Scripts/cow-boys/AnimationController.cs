@@ -51,7 +51,7 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public void PlayShootAnimation(bool goodShot)
+    public void PlayShootAnimation()
     {
         animator.Play(characterName + "_shoot", 0);
     }
