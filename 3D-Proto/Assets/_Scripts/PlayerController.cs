@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
+using System;
+using System.Collections;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -19,9 +21,11 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
+        name = "LocalPlayer";
         cam.enabled = true;
         cam.GetComponent<AudioListener>().enabled = true;
         cam.GetComponent<MouseLook>().enabled = true;
+        GetComponent<VoiceChat>().enabled = true;
         AudioListener al = Camera.main.GetComponent<AudioListener>();
         if (al != null)
             al.enabled = false;
@@ -30,6 +34,7 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
+        if (!isLocalPlayer) return;
         controller = GetComponent<CharacterController>();
     }
 
@@ -55,9 +60,9 @@ public class PlayerController : NetworkBehaviour
     {
         Vector3 velocity = cam.transform.forward * projectileBaseSpeed;
         GameObject projectile = Instantiate(projectilePrefab);
-        NetworkServer.Spawn(projectile);
         projectile.transform.position = projectileSpawnPos.position;
         projectile.GetComponent<Rigidbody>().AddForce(velocity, ForceMode.Impulse);
+        NetworkServer.Spawn(projectile);
         RpcOnShoot();
     }
 
